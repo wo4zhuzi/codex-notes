@@ -98,7 +98,7 @@ review_model = "gpt-5.5"
 # 推理强度控制（核心性能开关）
 # =========================
 
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 
 # 可选等级说明：
 
@@ -107,20 +107,20 @@ model_reasoning_effort = "medium"
 # - 适用于简单任务
 # - 如：脚本 / 文档 / 格式转换
 
-# medium（推荐默认）：
-# - 平衡速度与推理能力
+# high：
+# - 默认工程开发模式
 # - 适用于大多数工程开发场景
 
-# high：
+# exhigh：
 # - 深度分析模式
 # - 用于复杂系统问题定位与设计
 
 # 当前策略：
-# 默认使用 medium（工程最优解）
+# 默认使用 high（token 充足时优先保证推理质量）
 
 # 适用场景切换建议：
 
-# 使用 high：
+# 使用 exhigh：
 # - 复杂问题排查（多模块联动）
 # - 性能瓶颈分析
 # - 架构设计评审

@@ -15,7 +15,7 @@ developer_instructions = """
 """
 
 review_model = "gpt-5.5"
-model_reasoning_effort = "high"
+model_reasoning_effort = "exhigh"
 disable_response_storage = true
 personality = "pragmatic"
 
@@ -24,4 +24,3 @@ fast_mode = false
 responses_websockets_v2 = false
 memories = false
 multi_agent = false
-
