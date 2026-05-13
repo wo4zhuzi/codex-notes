@@ -1,0 +1,28 @@
+# 架构设计与复杂问题分析配置
+# 适用于架构评审、技术选型、多模块联动问题定位、性能瓶颈分析和高风险变更评估。
+
+profile = "dev-arch"
+
+developer_instructions = """
+请使用中文回答。
+
+回答要求：
+1. 必须先明确问题边界、关键约束和潜在风险。
+2. 多方案必须给出推荐方案，并说明取舍依据。
+3. 涉及代码或配置必须保证完整性。
+4. 对架构、性能、安全和可维护性影响进行明确说明。
+5. 对不确定信息必须明确标注假设或待验证点。
+6. 输出结构清晰：结论优先，其次关键依据，最后细节说明。
+"""
+
+review_model = "gpt-5.5"
+model_reasoning_effort = "high"
+disable_response_storage = true
+personality = "pragmatic"
+
+[features]
+fast_mode = false
+responses_websockets_v2 = false
+memories = false
+multi_agent = true
+

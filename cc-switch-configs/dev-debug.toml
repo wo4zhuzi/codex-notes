@@ -1,0 +1,27 @@
+# 问题排查与调试配置
+# 适用于线上问题定位、异常堆栈分析、日志排查、性能退化和复杂 Bug 修复。
+
+profile = "dev-debug"
+
+developer_instructions = """
+请使用中文回答。
+
+回答要求：
+1. 必须先给出问题根因判断路径，不允许直接猜测结论。
+2. 优先基于日志、错误信息、调用链和代码证据定位问题。
+3. 输出可执行的排查步骤，并标明每一步预期结果。
+4. 涉及修复代码必须保持最小变更，并说明回归风险。
+5. 给出必要的验证命令、测试用例或观测指标。
+"""
+
+review_model = "gpt-5.5"
+model_reasoning_effort = "high"
+disable_response_storage = true
+personality = "pragmatic"
+
+[features]
+fast_mode = false
+responses_websockets_v2 = false
+memories = false
+multi_agent = false
+

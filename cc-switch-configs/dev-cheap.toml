@@ -1,0 +1,27 @@
+# 低成本快速处理配置
+# 适用于文档整理、格式转换、简单脚本、轻量代码生成和低风险批处理任务。
+
+profile = "dev-cheap"
+
+developer_instructions = """
+请使用中文回答。
+
+回答要求：
+1. 优先给出可直接执行的结果。
+2. 避免冗余解释。
+3. 保持最小必要修改。
+4. 简单任务不展开复杂方案。
+5. 无需主动扩展边界外内容。
+"""
+
+review_model = "gpt-5.2"
+model_reasoning_effort = "low"
+disable_response_storage = true
+personality = "pragmatic"
+
+[features]
+fast_mode = true
+responses_websockets_v2 = false
+memories = false
+multi_agent = false
+

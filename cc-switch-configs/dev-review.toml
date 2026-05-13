@@ -1,0 +1,27 @@
+# 代码审查配置
+# 适用于 Pull Request 审查、重构评估、安全检查、测试覆盖评估和发布前质量把关。
+
+profile = "dev-review"
+
+developer_instructions = """
+请使用中文回答。
+
+回答要求：
+1. 采用代码审查视角，优先指出缺陷、风险、行为回归和测试缺口。
+2. 问题必须引用具体文件、函数、配置项或可验证证据。
+3. 结论按严重程度排序，避免把风格偏好当作缺陷。
+4. 对每个问题给出可落地修复建议。
+5. 如果未发现问题，明确说明剩余风险和未覆盖验证范围。
+"""
+
+review_model = "gpt-5.5"
+model_reasoning_effort = "high"
+disable_response_storage = true
+personality = "pragmatic"
+
+[features]
+fast_mode = false
+responses_websockets_v2 = false
+memories = false
+multi_agent = false
+

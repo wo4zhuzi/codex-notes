@@ -1,0 +1,28 @@
+# 日常开发配置（推荐默认）
+# 适用于常规需求开发、Bug 修复、接口联调和中等复杂度问题排查。
+
+profile = "dev-main"
+
+developer_instructions = """
+请使用中文回答。
+
+回答要求：
+1. 优先提供工程可落地的实现方案。
+2. 涉及代码必须保证完整性，避免仅给思路或片段代码。
+3. 修改代码遵循最小变更原则，避免无意义重构或结构重排。
+4. 必须先定位问题根因，再给出解决方案。
+5. 输出结构清晰：结论优先，其次关键依据，最后细节说明。
+6. 避免冗余解释与概念扩展，保持工程导向表达。
+"""
+
+review_model = "gpt-5.5"
+model_reasoning_effort = "medium"
+disable_response_storage = true
+personality = "pragmatic"
+
+[features]
+fast_mode = false
+responses_websockets_v2 = false
+memories = false
+multi_agent = false
+
