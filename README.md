@@ -16,6 +16,7 @@ Codex / Claude Code 相关使用笔记与配置模板。
 .
 ├── README.md
 ├── codex-cli.md
+├── codex-skills.md
 ├── cc-swtich.md
 └── cc-switch-configs/
     ├── dev-main.toml
@@ -28,6 +29,7 @@ Codex / Claude Code 相关使用笔记与配置模板。
 ## 快速入口
 
 - [Codex CLI 使用笔记](./codex-cli.md)
+- [Codex Skills 使用笔记](./codex-skills.md)
 - [CC-Switch 使用笔记](./cc-swtich.md)
 - [CC-Switch 配置模板](./cc-switch-configs)
 
@@ -46,9 +48,10 @@ Codex / Claude Code 相关使用笔记与配置模板。
 ## 使用建议
 
 1. 先阅读 [Codex CLI 使用笔记](./codex-cli.md)，完成 Codex CLI 安装与登录。
-2. 再阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
-3. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
-4. 修改配置前建议保留原始配置备份，方便回滚。
+2. 再阅读 [Codex Skills 使用笔记](./codex-skills.md)，了解 skills 的触发方式和排查流程。
+3. 继续阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
+4. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
+5. 修改配置前建议保留原始配置备份，方便回滚。
 
 ## 适用场景
 
