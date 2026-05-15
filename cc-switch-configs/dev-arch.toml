@@ -19,6 +19,24 @@ developer_instructions = """
 2. 执行 /init 生成 AGENTS.md 时，标题、章节名、正文和示例说明均使用简体中文。
 """
 
+# 用途：
+# 控制模型进行架构设计、复杂问题分析和高风险变更评估
+
+# 当前策略：
+# - 强边界识别
+# - 多方案对比
+# - 明确风险和取舍依据
+
+# 适用场景：
+# - 架构评审
+# - 技术选型
+# - 多模块联动问题定位
+# - 性能瓶颈分析和高风险变更评估
+
+# 可调整场景：
+# - 常规开发任务：切换到 dev-main.toml
+# - 明确线上故障排查：切换到 dev-debug.toml
+
 review_model = "gpt-5.5"
 model_reasoning_effort = "exhigh"
 disable_response_storage = true

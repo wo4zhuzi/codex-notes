@@ -18,6 +18,24 @@ developer_instructions = """
 2. 执行 /init 生成 AGENTS.md 时，标题、章节名、正文和示例说明均使用简体中文。
 """
 
+# 用途：
+# 控制模型的问题定位、排查路径和修复验证输出
+
+# 当前策略：
+# - 强根因分析
+# - 强证据链约束
+# - 强验证闭环
+
+# 适用场景：
+# - 线上问题定位
+# - 异常堆栈分析
+# - 日志排查
+# - 性能退化和复杂 Bug 修复
+
+# 可调整场景：
+# - 简单报错排查：可降低推理强度
+# - 已知根因修复：可减少分析步骤
+
 review_model = "gpt-5.5"
 model_reasoning_effort = "exhigh"
 disable_response_storage = true

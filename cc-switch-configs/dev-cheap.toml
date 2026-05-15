@@ -18,6 +18,24 @@ developer_instructions = """
 2. 执行 /init 生成 AGENTS.md 时，标题、章节名、正文和示例说明均使用简体中文。
 """
 
+# 用途：
+# 控制模型以较低成本完成轻量任务
+
+# 当前策略：
+# - 快速响应
+# - 最小解释
+# - 最小必要修改
+
+# 适用场景：
+# - 文档整理
+# - 格式转换
+# - 简单脚本
+# - 轻量代码生成和低风险批处理任务
+
+# 可调整场景：
+# - 复杂业务逻辑：切换到 dev-main.toml
+# - 高风险修复或排查：切换到 dev-debug.toml
+
 review_model = "gpt-5.2"
 model_reasoning_effort = "low"
 disable_response_storage = true

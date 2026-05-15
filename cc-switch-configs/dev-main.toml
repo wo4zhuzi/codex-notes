@@ -19,6 +19,24 @@ developer_instructions = """
 2. 执行 /init 生成 AGENTS.md 时，标题、章节名、正文和示例说明均使用简体中文。
 """
 
+# 用途：
+# 控制模型输出风格与工程约束能力
+
+# 当前策略：
+# - 强工程约束
+# - 强可执行性
+# - 偏后端工程实践
+
+# 适用场景：
+# - 常规需求开发
+# - Bug 修复
+# - API / RPC / 中间件
+# - 接口联调和中等复杂度问题排查
+
+# 可调整场景：
+# - 学习 / 概念理解：可简化指令
+# - PoC / demo：降低约束
+
 review_model = "gpt-5.5"
 model_reasoning_effort = "high"
 disable_response_storage = true

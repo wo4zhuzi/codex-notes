@@ -18,6 +18,24 @@ developer_instructions = """
 2. 执行 /init 生成 AGENTS.md 时，标题、章节名、正文和示例说明均使用简体中文。
 """
 
+# 用途：
+# 控制模型以代码审查视角输出缺陷、风险和修复建议
+
+# 当前策略：
+# - 优先发现行为风险
+# - 强证据引用
+# - 区分缺陷和风格偏好
+
+# 适用场景：
+# - Pull Request 审查
+# - 重构评估
+# - 安全检查
+# - 测试覆盖评估和发布前质量把关
+
+# 可调整场景：
+# - 只需格式建议：可降低审查强度
+# - 需要实现修复：切换到 dev-main.toml
+
 review_model = "gpt-5.5"
 model_reasoning_effort = "exhigh"
 disable_response_storage = true
