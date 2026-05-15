@@ -12,6 +12,10 @@ developer_instructions = """
 3. 保持最小必要修改。
 4. 简单任务不展开复杂方案。
 5. 无需主动扩展边界外内容。
+
+文档语言要求：
+1. 生成或修改仓库文档、配置说明、README、AGENTS.md 时，默认使用简体中文；除非用户明确要求英文，否则不要生成英文文档。
+2. 执行 /init 生成 AGENTS.md 时，标题、章节名、正文和示例说明均使用简体中文。
 """
 
 review_model = "gpt-5.2"
@@ -24,4 +28,3 @@ fast_mode = true
 responses_websockets_v2 = false
 memories = false
 multi_agent = false
-
