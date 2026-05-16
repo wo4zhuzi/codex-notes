@@ -6,6 +6,15 @@
 
 ## 当前可用 Skills
 
+当前会话识别到的个人安装 skills：
+
+| Skill | 来源 | 适用场景 | 典型触发方式 |
+| --- | --- | --- | --- |
+| `brainstorming` | `obra/superpowers` | 需求澄清、方案发散、设计评审 | 创建功能、修改行为、需要技术取舍 |
+| `writing-plans` | `obra/superpowers` | 将已确认需求拆成可执行计划 | 根据方案生成实现计划、多步骤任务规划 |
+| `systematic-debugging` | `obra/superpowers` | bug、测试失败、构建失败、异常行为排查 | 帮我排查问题、测试失败了、定位根因 |
+| `verification-before-completion` | `obra/superpowers` | 完成前强制验证，避免未验证就声称完成 | 准备说完成、修好了、测试通过前 |
+
 当前会话识别到的系统内置 skills：
 
 | Skill | 适用场景 | 典型触发方式 |
@@ -168,6 +177,81 @@ test -f ~/.codex/skills/brainstorming/SKILL.md && echo "installed"
 ```
 
 安装完成后重启 Codex，新的 `brainstorming` skill 才会被会话识别。
+
+### 程序员推荐安装组合
+
+推荐先单独安装以下 Superpowers skills，而不是一开始安装完整 Superpowers 插件：
+
+```text
+brainstorming
+writing-plans
+systematic-debugging
+verification-before-completion
+```
+
+取舍依据：
+
+- 覆盖日常开发最常见闭环：需求澄清、计划拆解、根因排查、完成前验证。
+- 不强制引入完整 Superpowers 的重流程，例如 worktree、强制 TDD、subagent 驱动开发和分支收尾。
+- 与本仓库核心工作流兼容：先计划、定位根因、执行后验证和记录上下文。
+
+安装命令：
+
+```shell
+python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo obra/superpowers \
+  --path skills/brainstorming \
+  --path skills/writing-plans \
+  --path skills/systematic-debugging \
+  --path skills/verification-before-completion
+```
+
+如已安装其中某个 skill，安装脚本可能提示目标目录已存在；这种情况可只安装缺失项。
+
+验证：
+
+```shell
+find ~/.codex/skills -maxdepth 2 -name SKILL.md
+```
+
+当前已安装：
+
+```text
+~/.codex/skills/brainstorming/SKILL.md
+~/.codex/skills/writing-plans/SKILL.md
+~/.codex/skills/systematic-debugging/SKILL.md
+~/.codex/skills/verification-before-completion/SKILL.md
+```
+
+### 切换为完整 Superpowers 插件
+
+如果希望使用完整 Superpowers 方法论，可以安装完整 Superpowers 插件。完整插件会包含 `brainstorming`、`writing-plans`、`systematic-debugging`、`test-driven-development`、`using-git-worktrees`、`subagent-driven-development`、`requesting-code-review` 等一整套流程。
+
+Codex CLI 安装方式：
+
+```text
+/plugins
+```
+
+在插件搜索界面搜索：
+
+```text
+superpowers
+```
+
+然后选择 `Install Plugin`。
+
+Codex App 安装方式：
+
+```text
+Plugins -> Coding -> Superpowers -> +
+```
+
+注意事项：
+
+- 完整 Superpowers 插件流程更重，会更积极地触发规划、TDD、review、worktree 和分支收尾等规范。
+- 如果安装完整 Superpowers 插件，建议删除或停用单独安装的同名 skills，避免 `brainstorming` 等同名 skill 出现重复来源导致触发行为不稳定。
+- 如果只需要轻量工程闭环，优先保留单独安装的四个 skills。
 
 ### 自动触发
 
