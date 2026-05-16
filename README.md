@@ -16,8 +16,12 @@ Codex / Claude Code 相关使用笔记与配置模板。
 .
 ├── README.md
 ├── codex-cli.md
+├── codex-core-commands.md
 ├── codex-skills.md
 ├── cc-swtich.md
+├── docs/
+│   └── changes/
+│       └── YYYY-MM-DD-<topic>.md
 └── cc-switch-configs/
     ├── dev-main.toml
     ├── dev-debug.toml
@@ -29,9 +33,11 @@ Codex / Claude Code 相关使用笔记与配置模板。
 ## 快速入口
 
 - [Codex CLI 使用笔记](./codex-cli.md)
+- [Codex 核心指令](./codex-core-commands.md)
 - [Codex Skills 使用笔记](./codex-skills.md)
 - [CC-Switch 使用笔记](./cc-swtich.md)
 - [CC-Switch 配置模板](./cc-switch-configs)
+- [会话变更记录](./docs/changes)
 
 ## 配置模板说明
 
@@ -52,6 +58,8 @@ Codex / Claude Code 相关使用笔记与配置模板。
 3. 继续阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
 4. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
 5. 修改配置前建议保留原始配置备份，方便回滚。
+
+执行会产生仓库改动的任务时，建议遵循 [Codex 核心指令](./codex-core-commands.md) 中的流程：先规划、再让 AI 检查计划、执行后在 `docs/changes/` 生成日期开头的变更文档，最后检查 diff 并审查风险。
 
 ## 适用场景
 
