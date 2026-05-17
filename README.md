@@ -16,6 +16,7 @@ Codex / Claude Code 相关使用笔记与配置模板。
 .
 ├── README.md
 ├── ai-workflow.md
+├── ai-project-checklist.md
 ├── spec-workflow.md
 ├── tdd-workflow.md
 ├── codex-cli.md
@@ -36,6 +37,7 @@ Codex / Claude Code 相关使用笔记与配置模板。
 ## 快速入口
 
 - [AI 编程工作流](./ai-workflow.md)
+- [AI 项目落地清单](./ai-project-checklist.md)
 - [Spec 模式实践](./spec-workflow.md)
 - [TDD 实践手册](./tdd-workflow.md)
 - [Codex CLI 使用笔记](./codex-cli.md)
@@ -60,13 +62,14 @@ Codex / Claude Code 相关使用笔记与配置模板。
 ## 使用建议
 
 1. 先阅读 [AI 编程工作流](./ai-workflow.md)，理解 vibe、plan、spec 和 harness engineering 的分工。
-2. 新项目或高风险任务先参考 [Spec 模式实践](./spec-workflow.md)，确认边界、方案和进度。
-3. Spec 确认后，核心业务逻辑参考 [TDD 实践手册](./tdd-workflow.md)，先用测试锁定行为再实现。
-4. 再阅读 [Codex CLI 使用笔记](./codex-cli.md)，完成 Codex CLI 安装与登录。
-5. 继续阅读 [Codex Skills 使用笔记](./codex-skills.md)，了解 skills 的触发方式和排查流程。
-6. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
-7. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
-8. 修改配置前建议保留原始配置备份，方便回滚。
+2. 新项目先参考 [AI 项目落地清单](./ai-project-checklist.md)，确认导航、验证、权限边界和变更记录。
+3. 新项目或高风险任务先参考 [Spec 模式实践](./spec-workflow.md)，确认边界、方案和进度。
+4. Spec 确认后，核心业务逻辑参考 [TDD 实践手册](./tdd-workflow.md)，先用测试锁定行为再实现。
+5. 再阅读 [Codex CLI 使用笔记](./codex-cli.md)，完成 Codex CLI 安装与登录。
+6. 继续阅读 [Codex Skills 使用笔记](./codex-skills.md)，了解 skills 的触发方式和排查流程。
+7. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
+8. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
+9. 修改配置前建议保留原始配置备份，方便回滚。
 
 执行会产生仓库改动的任务时，建议遵循 [Codex 核心指令](./codex-core-commands.md) 中的流程：先规划、再让 AI 检查计划、执行后在 `docs/changes/` 生成日期开头的变更文档，最后检查 diff 并审查风险。
 
