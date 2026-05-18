@@ -13,7 +13,7 @@ codex resume --last 或 /init -> /status -> /plan 或 /collab -> AI 检查计划
 - 如果是延续昨天或上次未完成任务，优先使用 `codex resume --last` 恢复最近会话，再用 `/status` 确认上下文。
 - 如果本次会话产生任何仓库文件改动，执行完成后必须自动在 `docs/changes/` 下创建或更新以日期开头的变更文档，沉淀本次会话的上下文。
 - 长会话、上下文接近上限或准备跨天继续时，应使用 `/compact` 压缩上下文，避免后续恢复时丢失关键决策。
-- 提交前使用 `/diff` 核对真实改动，再使用 `/review` 做最后一轮风险检查。
+- 提交前使用 `/diff` 核对真实改动，再使用 `/review` 做最后一轮风险检查。完整 Git 分支、worktree、commit 和 push 规则见 [Git 融入 AI 工作流](./git-workflow.md)。
 
 ## resume：恢复上次会话
 
@@ -246,6 +246,8 @@ docs/changes/YYYY-MM-DD-<topic>.md
 
 ## Git / commit / PR 操作边界
 
+完整操作手册见 [Git 融入 AI 工作流](./git-workflow.md)。本节只记录核心边界。
+
 AI 执行文件修改前，应先查看工作区状态：
 
 ```bash
@@ -263,13 +265,32 @@ git status --short
 
 - AI 可以查看 `git status`、`git diff` 和提交历史。
 - AI 不应默认执行 commit、tag、push、rebase、reset 或清理工作区。
-- 只有用户明确授权后，AI 才能提交 commit 或执行会改变 Git 历史和远端状态的命令。
+- AI 可以自动准备 commit message、提交摘要和待提交文件清单，但不能自动执行 commit。
+- 准备 commit 时，AI 必须先汇报待提交文件、变更摘要、验证结果和建议 commit message。
+- 只有用户明确回复“确认提交”“yes”“commit”后，AI 才能执行 `git add` 和 `git commit`。
+- `git push` 必须单独授权，不能跟随 commit 自动执行。
 - 如果发现无关改动，不要回滚；只说明它们存在，并把本次修改限制在目标文件内。
 
 推荐提交前顺序：
 
 ```text
-运行验证命令 -> /diff -> /review -> 确认 docs/changes 记录 -> 用户授权 commit
+运行验证命令 -> 确认 docs/changes 记录 -> /diff -> /review -> AI 准备 commit -> 用户授权 commit -> 用户单独授权 push
+```
+
+AI 汇报 commit 准备信息时建议使用：
+
+```text
+准备提交以下文件：
+- <path>：<改动摘要>
+
+验证结果：
+- <命令>：通过 / 失败原因
+
+建议 commit message：
+<动词 + 对象>
+
+本次不会提交：
+- <用户已有改动或无关文件>
 ```
 
 提交信息建议继续使用简短中文动宾结构：

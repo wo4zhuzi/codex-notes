@@ -2,7 +2,7 @@
 
 本文记录 AI 编程协作的方法论总纲，用于决定不同任务应该采用哪种协作模式，以及如何用验证、上下文沉淀和仓库约束提升 agent 执行质量。
 
-它不是命令手册。具体 Codex 命令见 [Codex 核心指令](./codex-core-commands.md)，skills 安装与触发见 [Codex Skills 使用笔记](./codex-skills.md)。
+它不是命令手册。具体 Codex 命令见 [Codex 核心指令](./codex-core-commands.md)，Git 提交边界见 [Git 融入 AI 工作流](./git-workflow.md)，skills 安装与触发见 [Codex Skills 使用笔记](./codex-skills.md)。
 
 ## 核心结论
 
@@ -189,6 +189,7 @@ AI 协作需要默认权限，也需要明确停止线。权限边界越清楚�
 - 安装依赖、联网下载、升级主要框架或修改锁文件。
 - 数据库迁移、生产配置、发布脚本、CI/CD 权限相关改动。
 - 提交 commit、创建 tag、push 远端或发起发布。
+- 准备 commit 时，AI 应先汇报待提交文件、变更摘要、验证结果和建议 commit message，等待用户确认后再提交。
 
 始终禁止：
 
@@ -233,7 +234,7 @@ AI 编程不是单轮对话，必须考虑跨天、压缩和交接。
 日常任务建议按以下顺序执行：
 
 ```text
-确认任务风险 -> 选择 vibe/plan/spec -> 定位上下文 -> 执行或计划 -> 验证 -> 自愈 -> 记录变更 -> diff/review
+确认任务风险 -> 选择 vibe/plan/spec -> 定位上下文 -> 执行或计划 -> 验证 -> 自愈 -> 记录变更 -> diff/review -> AI 准备 commit -> 用户确认 commit
 ```
 
 跨天任务：
