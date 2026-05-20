@@ -26,10 +26,11 @@
 - 用户确认完整 Spec 前，不得开始实现；执行完成后仍必须生成 `docs/changes/YYYY-MM-DD-<topic>.md`。
 - 涉及核心业务规则、bugfix、重构、权限、安全、数据一致性时，优先使用 TDD；操作流程见 `tdd-workflow.md`。
 - 有测试框架时，应先写失败测试，再实现，再验证通过；没有测试框架时，必须记录等价的手动验证步骤。
+- 如使用 `planning-with-files` 或类似文件型计划流程，`task_plan.md` 记录执行前计划，`findings.md` 记录过程上下文，`progress.md` 仅记录当前任务执行状态；`progress.md` 不替代 `docs/changes/`。
 - 如果本次会话产生任何仓库文件改动，必须在结束前自动创建或更新 `docs/changes/YYYY-MM-DD-<topic>.md`。
 - 不需要等待用户额外要求“生成日期变更文档”，也不要只在最终回复中用文字描述替代文档。
 - 变更文档应记录任务背景、根因定位、执行计划、变更内容、验证结果和直接相关的后续建议。
-- 变更文档不得写入真实 API Key、个人账户 Token、私有代理地址或内部服务 URL。
+- `task_plan.md`、`findings.md`、`progress.md` 和变更文档均不得写入真实 API Key、个人账户 Token、私有代理地址或内部服务 URL。
 
 ## 构建、测试与本地检查命令
 

@@ -11,6 +11,7 @@
 | Skill | 来源 | 适用场景 | 典型触发方式 |
 | --- | --- | --- | --- |
 | `brainstorming` | `obra/superpowers` | 需求澄清、方案发散、设计评审 | 创建功能、修改行为、需要技术取舍 |
+| `planning-with-files` | `OthmanAdi/planning-with-files` | 文件型任务计划、过程笔记和进度跟踪 | 长任务规划、跨上下文恢复、生成 `task_plan.md` |
 | `writing-plans` | `obra/superpowers` | 将已确认需求拆成可执行计划 | 根据方案生成实现计划、多步骤任务规划 |
 | `systematic-debugging` | `obra/superpowers` | bug、测试失败、构建失败、异常行为排查 | 帮我排查问题、测试失败了、定位根因 |
 | `verification-before-completion` | `obra/superpowers` | 完成前强制验证，避免未验证就声称完成 | 准备说完成、修好了、测试通过前 |
@@ -45,6 +46,80 @@
 `SKILL.md` 是 skill 的主说明文件，里面定义该 skill 的使用规则、触发方式和执行流程。
 
 ## 使用方式
+
+### `planning-with-files` 使用规范
+
+`planning-with-files` 适合需要把任务计划、过程笔记和执行状态落到文件中的长任务。它的价值不是替代 `/plan` 或 `docs/changes/`，而是让任务在中断、压缩上下文或跨天恢复时仍有清晰现场。
+
+推荐在以下场景使用：
+
+- 多步骤文档或代码改动，需要持续跟踪执行状态。
+- 任务可能跨上下文、跨天或由不同 agent 接续。
+- 需要把调研结论、方案取舍和执行进度拆开保存。
+- 用户明确要求“把计划写到文件里”“生成任务计划和执行记录”。
+
+显式触发示例：
+
+```text
+使用 planning-with-files skill，帮我规划并跟踪这个任务。
+```
+
+```text
+用 planning-with-files 把这个长任务拆成 task_plan.md、findings.md 和 progress.md。
+```
+
+自然触发示例：
+
+```text
+这个任务可能明天继续，帮我把计划、调研笔记和当前进度都写到文件里。
+```
+
+```text
+请生成可恢复执行的任务计划，并在过程中维护进度记录。
+```
+
+三个文件的推荐分工：
+
+| 文件 | 职责 | 典型内容 | 生命周期 |
+| --- | --- | --- | --- |
+| `task_plan.md` | 执行前计划 | 目标、根因、执行步骤、验证方式、风险边界 | 任务开始前生成，执行中必要时更新 |
+| `findings.md` | 过程上下文 | 调研发现、命令输出摘要、设计取舍、未采纳方案、注意事项 | 任务全过程维护，可作为后续参考 |
+| `progress.md` | 执行中状态 | checklist、当前阻塞、下一步、已完成节点 | 当前任务执行中维护，默认不作为最终总结 |
+
+推荐的 `progress.md` 内容保持短小：
+
+```markdown
+# Progress
+
+- [x] 阅读项目规则和相关文档
+- [x] 定位需要修改的文件
+- [ ] 修改文档
+- [ ] 运行验证命令
+- [ ] 生成 docs/changes 记录
+
+## 当前阻塞
+
+无
+
+## 下一步
+
+修改目标文档并检查 diff。
+```
+
+和 `docs/changes/` 的边界：
+
+- `task_plan.md` 回答“准备怎么做”。
+- `findings.md` 回答“为什么这么做”。
+- `progress.md` 回答“现在做到哪一步”。
+- `docs/changes/YYYY-MM-DD-<topic>.md` 回答“最终实际发生了什么”。
+
+因此，`progress.md` 只用于当前任务执行跟踪，不替代 `docs/changes/`。只要任务产生仓库文件改动，结束前仍必须从 `task_plan.md`、`findings.md` 和 `progress.md` 中提炼最终事实，生成或更新 `docs/changes/YYYY-MM-DD-<topic>.md`。
+
+推荐采用这种分工，而不是删除 `progress.md` 或把它合并进 `docs/changes/`：
+
+- 删除 `progress.md` 会削弱长任务恢复能力。
+- 把 `progress.md` 合并进 `docs/changes/` 会让长期变更记录混入临时 checklist 和阻塞状态。
+- 保留 `progress.md` 但限定为短期执行状态，能同时兼顾恢复现场和长期记录质量。
 
 ## 安装 Skills
 
