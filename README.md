@@ -1,6 +1,6 @@
 # codex-notes
 
-Codex / Claude Code 相关使用笔记与配置模板。
+Codex 相关使用笔记与配置模板。
 
 ## 内容说明
 
