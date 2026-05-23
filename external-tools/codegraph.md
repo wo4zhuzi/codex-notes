@@ -236,6 +236,9 @@ codegraph mcp
 # 查看项目结构热点
 codegraph map
 
+# 查看索引统计
+codegraph stats
+
 # 查询符号
 codegraph query <symbol-name>
 
@@ -247,9 +250,61 @@ codegraph fn-impact <symbol-name> -T
 
 # 查看 staged diff 影响面
 codegraph diff-impact --staged -T
+
+# 生成交互式 HTML 依赖图
+codegraph plot
+
+# 生成指定文件名的 HTML 依赖图
+codegraph plot -o codegraph.html
+
+# 只生成 HTML，不自动打开浏览器
+codegraph plot -o codegraph.html --no-open
+
+# 查看函数级依赖图
+codegraph plot --functions -o codegraph-functions.html
+
+# 大项目优先按目录聚合，并限制种子节点数量
+codegraph plot --cluster directory --seed top-fanin --seed-count 50 -o codegraph.html
+
+# 导出 Mermaid 图
+codegraph export -f mermaid -o graph.mmd
+
+# 导出 JSON，便于脚本或 AI 工具继续分析
+codegraph export -f json -o graph.json
+
+# 导出 GraphML，便于导入图分析工具
+codegraph export -f graphml -o graph.graphml
 ```
 
 如果命令参数和当前安装版本不一致，以本机 `codegraph --help` 输出为准。
+
+## 查看索引图表
+
+建索引后，如果想自己查看依赖图，优先使用：
+
+```bash
+codegraph plot --cluster directory --seed top-fanin --seed-count 50 -o codegraph.html
+```
+
+这个命令会生成一个交互式 HTML 图表。`--cluster directory` 按目录聚合节点，`--seed top-fanin` 优先展示被依赖较多的节点，`--seed-count 50` 控制初始节点数量，适合中大型项目先看结构热点。
+
+如果项目较小，也可以直接使用：
+
+```bash
+codegraph plot
+```
+
+需要函数级调用关系时再加 `--functions`：
+
+```bash
+codegraph plot --functions -o codegraph-functions.html
+```
+
+需要给其他工具消费时，使用 `codegraph export` 导出结构化格式；日常推荐优先导出 JSON：
+
+```bash
+codegraph export -f json -o graph.json
+```
 
 ## 推荐日常流程
 
@@ -271,6 +326,12 @@ cd /path/to/your-project
 git status --short
 codegraph build
 codex
+```
+
+如果想先自己看索引图表，可在 `codegraph build` 后执行：
+
+```bash
+codegraph plot --cluster directory --seed top-fanin --seed-count 50 -o codegraph.html
 ```
 
 进入 Codex 后，可以直接要求：
