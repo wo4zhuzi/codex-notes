@@ -202,6 +202,32 @@ docs/changes/YYYY-MM-DD-<topic>.md
 
 新手建议先让 Codex 读项目、解释方案和列出风险，不要一开始就放开全自动执行。确认当前状态时，可以先用 `/status` 查看会话信息，再用 `/permissions` 调整权限。
 
+## MCP：管理外部工具服务
+
+`codex mcp` 用于管理 Codex 可连接的外部 MCP server。MCP 适合把文档库、内部工具、数据库只读查询或远程服务，以标准化能力接入 Codex。
+
+常用命令：
+
+```bash
+codex mcp list
+codex mcp get <name>
+codex mcp add <name> -- <command> [args...]
+codex mcp add <name> --url <url>
+codex mcp remove <name>
+codex mcp login <name>
+codex mcp logout <name>
+codex mcp-server
+```
+
+使用边界：
+
+- `codex mcp add <name> -- <command>`：添加本地 stdio MCP server。
+- `codex mcp add <name> --url <url>`：添加 Streamable HTTP MCP server。
+- `codex mcp login/logout`：处理支持 OAuth 的 MCP server 登录状态。
+- `codex mcp-server`：将 Codex 自身作为 stdio MCP server 启动。
+
+MCP 的原理、认证、server 设计、安全边界和排查清单见 [Codex MCP 使用笔记](./mcp.md)。
+
 ## /plan：制定执行计划
 
 `/plan` 是每次任务执行前的默认步骤。它的作用不是直接改代码，而是先拆解执行路径、风险点和验证方式。任务越小，计划越短；任务越复杂，计划越细。

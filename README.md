@@ -7,6 +7,7 @@ Codex / Claude Code 相关使用笔记与配置模板。
 本仓库主要用于沉淀 AI 编程工具的本地使用经验，包括：
 
 - Codex CLI 安装、登录和基础配置。
+- Codex MCP 使用、原理和服务端设计思路。
 - CC-Switch 安装与服务商切换说明。
 - 面向不同开发场景的 CC-Switch 配置模板。
 
@@ -23,6 +24,7 @@ Codex / Claude Code 相关使用笔记与配置模板。
 ├── codex-cli.md
 ├── codex-core-commands.md
 ├── codex-skills.md
+├── mcp.md
 ├── cc-swtich.md
 ├── docs/
 │   └── changes/
@@ -45,6 +47,7 @@ Codex / Claude Code 相关使用笔记与配置模板。
 - [Codex CLI 使用笔记](./codex-cli.md)
 - [Codex 核心指令](./codex-core-commands.md)
 - [Codex Skills 使用笔记](./codex-skills.md)
+- [Codex MCP 使用笔记](./mcp.md)
 - [CC-Switch 使用笔记](./cc-swtich.md)
 - [CC-Switch 配置模板](./cc-switch-configs)
 - [会话变更记录](./docs/changes)
@@ -70,9 +73,10 @@ Codex / Claude Code 相关使用笔记与配置模板。
 5. Spec 确认后，核心业务逻辑参考 [TDD 实践手册](./tdd-workflow.md)，先用测试锁定行为再实现。
 6. 再阅读 [Codex CLI 使用笔记](./codex-cli.md)，完成 Codex CLI 安装与登录。
 7. 继续阅读 [Codex Skills 使用笔记](./codex-skills.md)，了解 skills 的触发方式和排查流程。
-8. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
-9. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
-10. 修改配置前建议保留原始配置备份，方便回滚。
+8. 如需接入外部工具或文档服务，阅读 [Codex MCP 使用笔记](./mcp.md)。
+9. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
+10. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
+11. 修改配置前建议保留原始配置备份，方便回滚。
 
 执行会产生仓库改动的任务时，建议遵循 [Codex 核心指令](./codex-core-commands.md) 中的流程：先规划、再让 AI 检查计划、执行后在 `docs/changes/` 生成日期开头的变更文档，最后检查 diff 并审查风险。
 
