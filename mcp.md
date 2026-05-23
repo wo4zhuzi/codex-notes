@@ -278,3 +278,14 @@ codex mcp list --json
 4. 在一次真实任务中验证工具是否能稳定返回结果。
 5. 再逐步接入需要认证、远程服务或写操作的 server。
 
+## CodeGraph 类工具接入模式
+
+CodeGraph 这类代码索引工具适合采用“两段式”接入：
+
+```text
+CLI / watch / CI 构建索引 -> MCP server 暴露查询能力 -> Codex 通过 MCP 查询索引
+```
+
+索引构建是确定性的工程动作，建议由用户命令、watch 进程、CI 或 git hook 控制；Codex 主要通过 MCP 消费已有索引，用于查询符号、调用链、影响面和模块关系。
+
+具体 CodeGraph 安装、建索引、gitignore 和 Codex MCP 接入流程见 [CodeGraph 使用笔记](./external-tools/codegraph.md)。

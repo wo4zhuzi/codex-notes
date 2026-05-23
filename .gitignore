@@ -1,3 +1,7 @@
 docs/*
 !docs/changes/
 !docs/changes/**
+
+# CodeGraph / code index cache
+.codegraph/
+.code-graph/

@@ -6,10 +6,11 @@
 
 - `README.md`：仓库入口、内容索引和使用建议。
 - `codex-cli.md`、`codex-core-commands.md`、`codex-skills.md`、`cc-swtich.md`：按主题拆分的使用笔记。
+- `external-tools/`：外部工具使用笔记，记录 CodeGraph、Serena、Context7、ast-grep 等可辅助 AI 编程的工具安装、配置、MCP 接入和使用方式。
 - `docs/changes/`：按日期记录每次 AI 会话产生的仓库改动，文件名格式为 `YYYY-MM-DD-<topic>.md`。
 - `cc-switch-configs/`：CC-Switch 场景化 TOML 配置模板，例如 `dev-main.toml`、`dev-review.toml`。
 
-新增主题笔记优先放在根目录 Markdown 文档中；会话变更记录放入 `docs/changes/`；仅配置模板放入 `cc-switch-configs/`。`cc-swtich.md` 文件名暂保持不变，避免破坏已有链接。
+新增通用主题笔记优先放在根目录 Markdown 文档中；外部工具类笔记放入 `external-tools/`；会话变更记录放入 `docs/changes/`；仅配置模板放入 `cc-switch-configs/`。`cc-swtich.md` 文件名暂保持不变，避免破坏已有链接。
 
 ## AI 协作工作流
 
