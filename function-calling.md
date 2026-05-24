@@ -36,6 +36,8 @@ Function Calling 适合让模型把自然语言转换成结构化函数调用参
 -> 模型根据函数结果生成最终回答
 ```
 
+本仓库 demo 为了兼容 sub2 等 OpenAI 兼容供应商代理，回传函数结果时不依赖 `previous_response_id`，而是在第二次请求中显式带上用户问题、模型返回的 `function_call` 和应用生成的 `function_call_output`。
+
 以查订单为例：
 
 ```text
@@ -100,17 +102,17 @@ for _, item := range response.Output {
 	result := callFunction(toolCall.Name, toolCall.Arguments)
 
 	finalResponse, err := client.Responses.New(ctx, responses.ResponseNewParams{
-		Model:              openai.ResponsesModel(model),
-		PreviousResponseID: openai.String(response.ID),
+		Model: openai.ResponsesModel(model),
 		Input: responses.ResponseNewParamsInputUnion{
-			OfInputItemList: []responses.ResponseInputItemUnionParam{{
-				OfFunctionCallOutput: &responses.ResponseInputItemFunctionCallOutputParam{
-					CallID: toolCall.CallID,
-					Output: responses.ResponseInputItemFunctionCallOutputOutputUnionParam{
-						OfString: openai.String(result),
-					},
-				},
-			}},
+			OfInputItemList: []responses.ResponseInputItemUnionParam{
+				responses.ResponseInputItemParamOfMessage(question, responses.EasyInputMessageRoleUser),
+				responses.ResponseInputItemParamOfFunctionCall(
+					toolCall.Arguments,
+					toolCall.CallID,
+					toolCall.Name,
+				),
+				responses.ResponseInputItemParamOfFunctionCallOutput(toolCall.CallID, result),
+			},
 		},
 		Tools: tools,
 	})

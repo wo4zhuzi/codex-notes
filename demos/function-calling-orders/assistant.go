@@ -77,17 +77,17 @@ func (a OrderAssistant) Run(question string) (string, error) {
 		}
 
 		finalResponse, err := a.client.New(ctx, responses.ResponseNewParams{
-			Model:              openai.ResponsesModel(a.model),
-			PreviousResponseID: openai.String(response.ID),
+			Model: openai.ResponsesModel(a.model),
 			Input: responses.ResponseNewParamsInputUnion{
-				OfInputItemList: []responses.ResponseInputItemUnionParam{{
-					OfFunctionCallOutput: &responses.ResponseInputItemFunctionCallOutputParam{
-						CallID: toolCall.CallID,
-						Output: responses.ResponseInputItemFunctionCallOutputOutputUnionParam{
-							OfString: openai.String(output),
-						},
-					},
-				}},
+				OfInputItemList: []responses.ResponseInputItemUnionParam{
+					responses.ResponseInputItemParamOfMessage(question, responses.EasyInputMessageRoleUser),
+					responses.ResponseInputItemParamOfFunctionCall(
+						toolCall.Arguments,
+						toolCall.CallID,
+						toolCall.Name,
+					),
+					responses.ResponseInputItemParamOfFunctionCallOutput(toolCall.CallID, output),
+				},
 			},
 			Tools: tools,
 		})

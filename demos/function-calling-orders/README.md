@@ -12,6 +12,8 @@
 -> 模型生成最终回答
 ```
 
+demo 回传函数结果时使用无状态请求：第二次请求会显式带上用户问题、模型生成的 `function_call` 和本地 `function_call_output`，不依赖 `previous_response_id`。这种方式对 sub2 等 OpenAI 兼容供应商代理更友好。
+
 ## 准备环境
 
 ```bash
@@ -105,5 +107,6 @@ http://127.0.0.1:8080
 - 这个 demo 不访问真实订单系统。
 - 模型只负责生成函数调用参数，不会直接读取本地文件。
 - 本地文件读取由 `orders.go` 中的 `GetOrderStatus` 执行。
+- demo 不使用 `previous_response_id`，避免部分供应商代理不支持 Responses HTTP 续接。
 - Web 页面不会保存聊天记录，刷新后页面消息会清空。
 - 如果没有设置 `OPENAI_API_KEY`，demo 会直接报错并提示设置环境变量。
