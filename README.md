@@ -7,6 +7,7 @@ Codex 相关使用笔记与配置模板。
 本仓库主要用于沉淀 AI 编程工具的本地使用经验，包括：
 
 - Codex CLI 安装、登录和基础配置。
+- Function Calling 原理和订单查询 demo。
 - Codex MCP 使用、原理和服务端设计思路。
 - CodeGraph 等外部工具的安装、配置和 MCP 接入流程。
 - CC-Switch 安装与服务商切换说明。
@@ -25,8 +26,11 @@ Codex 相关使用笔记与配置模板。
 ├── codex-cli.md
 ├── codex-core-commands.md
 ├── codex-skills.md
+├── function-calling.md
 ├── mcp.md
 ├── cc-swtich.md
+├── demos/
+│   └── function-calling-orders/
 ├── external-tools/
 │   ├── README.md
 │   └── codegraph.md
@@ -51,6 +55,7 @@ Codex 相关使用笔记与配置模板。
 - [Codex CLI 使用笔记](./codex-cli.md)
 - [Codex 核心指令](./codex-core-commands.md)
 - [Codex Skills 使用笔记](./codex-skills.md)
+- [Function Calling 使用笔记](./function-calling.md)
 - [Codex MCP 使用笔记](./mcp.md)
 - [外部工具使用笔记](./external-tools)
 - [CC-Switch 使用笔记](./cc-swtich.md)
