@@ -1,6 +1,6 @@
 # CodeGraph 使用笔记
 
-更新时间：2026-05-23。
+更新时间：2026-05-24。
 
 本文以 `@optave/codegraph` 为准，记录 CodeGraph 的安装、建索引、gitignore、Codex MCP 接入和日常使用流程。本文只写落地流程，不要求 AI 自动安装，也不要求 AI 自动执行索引构建。
 
@@ -125,6 +125,31 @@ codegraph query <symbol-name>
 
 如果命令失败，先不要接 MCP，先把本地 CLI 跑通。
 
+## 安装后的存储位置与格式
+
+CodeGraph 接入后通常会涉及三类 CodeGraph 相关位置：
+
+| 类型 | 默认位置或查看方式 | 说明 |
+| --- | --- | --- |
+| CLI 命令 | `which codegraph` | 全局安装后由当前 Node/npm 环境管理，实际路径取决于 Node 版本管理器、npm 前缀和系统 PATH。 |
+| npm 全局包 | `npm root -g` | 用于查看 `@optave/codegraph` 全局包安装根目录。 |
+| 项目索引 | `.codegraph/graph.db` | 在执行 `codegraph build` 的目标项目根目录生成。 |
+
+不要把个人机器上的绝对路径写入仓库文档。需要排查时，用上面的命令在本机查看即可。
+
+`.codegraph/graph.db` 是 SQLite 3 数据库。构建或查询过程中，同目录还可能出现：
+
+```text
+.codegraph/graph.db
+.codegraph/graph.db-wal
+.codegraph/graph.db-shm
+.codegraph/changes.journal
+```
+
+其中 `graph.db` 保存代码图谱索引；`graph.db-wal` 和 `graph.db-shm` 是 SQLite WAL 模式相关文件；`changes.journal` 用于记录 CodeGraph 自身的增量构建状态。
+
+数据库中会保存符号节点、依赖边、AST 节点、复杂度指标、数据流、控制流、文件哈希和构建元数据等结构化信息。它是 CodeGraph 的内部索引格式，不建议把表结构当作稳定公开 API，也不要让 AI 直接修改数据库。日常查询应通过 `codegraph` CLI 或 MCP 工具完成。
+
 ## 本地文件与 gitignore
 
 CodeGraph 索引属于本地生成产物，建议加入 `.gitignore`：
@@ -172,7 +197,21 @@ codex mcp list
 codex mcp get codegraph
 ```
 
+执行 `codex mcp add ...` 后，Codex 会把 MCP server 注册信息写入 `~/.codex/config.toml`。MCP 配置落盘格式、stdio / HTTP 传输方式和通用调用链路见 [Codex MCP 使用笔记](../mcp.md)。
+
+如果需要固定某个项目的索引数据库，可以让 `codegraph mcp` 显式指定 `graph.db`：
+
+```toml
+[mcp_servers.codegraph]
+command = "codegraph"
+args = ["mcp", "-d", "/path/to/your-project/.codegraph/graph.db"]
+```
+
+日常推荐优先用 `codex mcp add ...` 管理配置，不手写 TOML。手写配置时不要写入真实 Token、私有代理地址、内部服务 URL 或个人机器上的绝对路径。
+
 后续启动 Codex 后，AI 可以通过 `codegraph` MCP server 查询代码图谱。
+
+这个链路里，`codegraph build` 负责生成或更新索引；`codegraph mcp` 负责把已有索引以 MCP 工具形式暴露给 Codex。两者职责不同，不要把 MCP 查询等同于自动重建索引。
 
 ### 工作目录边界
 

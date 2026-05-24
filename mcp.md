@@ -1,6 +1,6 @@
 # Codex MCP 使用笔记
 
-更新时间：2026-05-23。
+更新时间：2026-05-24。
 
 本文记录 Codex 中 MCP（Model Context Protocol）的使用方式、基本原理和服务端设计思路。第一版以 Codex 使用为主，不覆盖 Claude Code 的 MCP 配置差异。
 
@@ -65,6 +65,45 @@ codex mcp get <name> --json
 ```bash
 codex mcp remove <name>
 ```
+
+### 配置落盘位置与格式
+
+`codex mcp add ...` 会把 MCP server 注册信息写入本机 Codex 配置文件：
+
+```text
+~/.codex/config.toml
+```
+
+配置通常以 `[mcp_servers.<name>]` 作为表名。以 stdio MCP server 为例：
+
+```toml
+[mcp_servers.local-docs]
+command = "node"
+args = ["/path/to/mcp-server.js"]
+```
+
+如果注册 CodeGraph：
+
+```bash
+codex mcp add codegraph -- codegraph mcp
+```
+
+对应配置通常类似：
+
+```toml
+[mcp_servers.codegraph]
+command = "codegraph"
+args = ["mcp"]
+```
+
+日常推荐通过 `codex mcp add/get/remove` 管理配置，不直接手写 `~/.codex/config.toml`。如果确实需要排查，可以用：
+
+```bash
+codex mcp get <name>
+codex mcp get <name> --json
+```
+
+手写或分享配置时，不要写入真实 Token、私有代理地址、内部服务 URL 或个人机器上的绝对路径。需要固定路径时，优先使用 `/path/to/...` 这类占位符示例。
 
 ### 添加 stdio MCP server
 
@@ -147,6 +186,30 @@ codex mcp logout <name>
 ```
 
 OAuth 适合用户级授权，例如文档平台、任务系统、代码托管平台等。服务端应只请求任务所需 scope，不要默认申请过宽权限。
+
+## MCP 调用链路
+
+不同 MCP server 的业务能力不同，但 Codex 使用它们的基本链路相同：
+
+```text
+用户请求
+-> Codex 判断需要外部能力
+-> Codex 读取 ~/.codex/config.toml 中的 mcp_servers.<name>
+-> Codex 作为 MCP client 启动或连接 MCP server
+-> Codex 与 MCP server 通过 JSON-RPC 交换消息
+-> MCP server 访问它背后的工具、索引、文档、数据库或远程服务
+-> MCP server 返回结构化结果
+-> Codex 基于结果继续分析、计划或修改代码
+```
+
+两类传输的差异主要在连接方式：
+
+| 传输方式 | 链路特点 | 适用场景 |
+| --- | --- | --- |
+| `stdio` | Codex 启动本地子进程，通过 stdin/stdout 交换 JSON-RPC 消息。 | 本地 CLI、本地索引工具、本地脚本。 |
+| `Streamable HTTP` | Codex 连接一个 HTTP MCP endpoint，通过 HTTP 传输 JSON-RPC 消息。 | 远程服务、团队共享服务、需要 OAuth 或 bearer token 的服务。 |
+
+因此，CodeGraph、文档检索、数据库只读查询等 MCP 的接入原理一致：Codex 不直接理解这些系统的内部存储格式，而是通过 MCP server 暴露的 tool/resource/prompt 获取受控结果。
 
 ## 什么时候适合使用 MCP
 
