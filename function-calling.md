@@ -160,6 +160,8 @@ export OPENAI_API_KEY="你的 API Key"
 go run . "帮我查一下订单 ORD-1001 到哪了"
 ```
 
+如果使用 sub2 或其他 OpenAI 兼容供应商代理，还需要设置 `OPENAI_BASE_URL`；具体示例见 `demos/function-calling-orders/README.md`。
+
 如果希望用网页形式体验：
 
 ```bash

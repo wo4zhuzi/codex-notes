@@ -25,6 +25,30 @@ go mod tidy
 export OPENAI_API_KEY="你的 API Key"
 ```
 
+如果使用 sub2 或其他 OpenAI 兼容供应商代理，需要同时设置供应商 Key 和接口地址：
+
+```bash
+export OPENAI_API_KEY="你的供应商 API Key"
+export OPENAI_BASE_URL="https://你的供应商接口地址/v1"
+```
+
+如果供应商不支持默认模型，可指定供应商支持的模型名：
+
+```bash
+export OPENAI_MODEL="供应商支持的模型名"
+```
+
+如果只想让环境变量影响本次 demo，不影响当前终端后续启动的其他程序，可以使用一次性命令：
+
+```bash
+OPENAI_API_KEY="你的供应商 API Key" \
+OPENAI_BASE_URL="https://你的供应商接口地址/v1" \
+OPENAI_MODEL="供应商支持的模型名" \
+go run . "帮我查一下订单 ORD-1001 到哪了"
+```
+
+`OPENAI_BASE_URL` 是否需要带 `/v1` 以供应商文档为准；OpenAI 兼容代理通常使用 `/v1` 作为 base URL。
+
 不要把真实 API Key 写入仓库文件。
 
 ## 运行
