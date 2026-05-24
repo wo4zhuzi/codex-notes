@@ -83,14 +83,53 @@ Spec 模式的关键不是文档长度，而是让实现者不需要再猜核心
 
 推荐按风险选择协作模式：
 
-| 任务类型 | 推荐模式 | 验证要求 |
-| --- | --- | --- |
-| 文案、小说明、简单示例 | Vibe coding | diff 检查和链接检查 |
-| 单模块 bug、小功能、小重构 | Plan 模式 | 测试、lint、typecheck 或等价检查 |
-| 跨模块功能、架构调整、迁移 | Spec 模式 | 分阶段验证和回归检查 |
-| 生产故障、测试大面积失败 | Systematic debugging | 先定位根因，再修复和验证 |
+| 任务类型 | 推荐模式 | 推荐 skill | 验证要求 |
+| --- | --- | --- | --- |
+| 文案、小说明、简单示例 | Vibe coding | 无需强制 skill | diff 检查和链接检查 |
+| 单模块 bug、小功能、小重构 | Plan 模式 | `react-execution` | 测试、lint、typecheck 或等价检查 |
+| 接口兼容、供应商兼容、未知代码库改动 | Plan 模式 | `systematic-debugging` + `react-execution` | 先定位根因，再小步修改和验证 |
+| 跨模块功能、架构调整、迁移 | Spec 模式 | `brainstorming` + `writing-plans` + `react-execution` | 分阶段验证和回归检查 |
+| 生产故障、测试大面积失败 | Systematic debugging | `systematic-debugging` + `verification-before-completion` | 先定位根因，再修复和验证 |
 
 如果任务风险判断不清，默认升一级处理：从 vibe 升到 plan，从 plan 升到 spec。
+
+## ReAct Execution 的位置
+
+ReAct Execution 不是 Spec，也不是 Plan。它是执行阶段的小步反馈机制，用于让 agent 在每一步行动后根据真实观察继续调整。
+
+核心循环保持英文术语：
+
+```text
+Goal -> Observe -> Decide -> Act -> Verify -> Adjust -> Final
+```
+
+和其他工作流的关系：
+
+```text
+Spec 定边界。
+Plan 拆步骤。
+ReAct Execution 跑执行循环。
+Harness 做验证反馈。
+```
+
+典型执行链路：
+
+```text
+用户目标
+-> Spec / Plan 锁定边界和步骤
+-> ReAct Execution 小步执行
+-> Harness 验证测试、lint、构建、日志和 diff
+-> ReAct 根据反馈继续、修复或停止
+-> Final 汇报根因、改动、验证结果和剩余风险
+```
+
+适合强制使用 ReAct Execution 的场景：
+
+- 复杂任务、bugfix、接口兼容和供应商兼容。
+- 未知代码库排查、测试失败修复和执行已有 plan/spec 的实现步骤。
+- 下一步动作依赖工具输出、测试结果或错误日志的任务。
+
+不适合把 ReAct 当作前置设计替代品。需求边界不清时仍应先进入 brainstorming、Plan 或 Spec。
 
 ## TDD 的位置
 
@@ -234,7 +273,7 @@ AI 编程不是单轮对话，必须考虑跨天、压缩和交接。
 日常任务建议按以下顺序执行：
 
 ```text
-确认任务风险 -> 选择 vibe/plan/spec -> 定位上下文 -> 执行或计划 -> 验证 -> 自愈 -> 记录变更 -> diff/review -> AI 准备 commit -> 用户确认 commit
+确认任务风险 -> 选择 vibe/plan/spec -> 定位上下文 -> 执行或计划 -> ReAct Execution -> Harness 验证 -> 自愈 -> 记录变更 -> diff/review -> AI 准备 commit -> 用户确认 commit
 ```
 
 跨天任务：
@@ -247,7 +286,7 @@ Spec 后有两条常用执行路径：
 
 | 路径 | 适用场景 | 推荐流程 |
 | --- | --- | --- |
-| Spec + Plan | 大多数高风险任务、架构调整、跨模块改动、文档或配置类复杂任务 | `spec 边界 -> spec 方案 -> plan 任务 -> 分阶段执行 -> 机械验证 -> 日期变更记录` |
-| Spec + TDD | 核心业务规则、bugfix、重构、权限、安全、数据一致性、复杂边界条件 | `spec 边界 -> spec 方案 -> TDD 测试清单 -> 分阶段执行 -> 机械验证 -> 日期变更记录` |
+| Spec + Plan | 大多数高风险任务、架构调整、跨模块改动、文档或配置类复杂任务 | `spec 边界 -> spec 方案 -> plan 任务 -> ReAct 分阶段执行 -> Harness 机械验证 -> 日期变更记录` |
+| Spec + TDD | 核心业务规则、bugfix、重构、权限、安全、数据一致性、复杂边界条件 | `spec 边界 -> spec 方案 -> TDD 测试清单 -> ReAct 分阶段执行 -> Harness 机械验证 -> 日期变更记录` |
 
 默认优先使用 Spec + Plan。只有当任务的正确性适合用测试约束时，再升级为 Spec + TDD。

@@ -14,6 +14,7 @@
 | `planning-with-files` | `OthmanAdi/planning-with-files` | 文件型任务计划、过程笔记和进度跟踪 | 长任务规划、跨上下文恢复、生成 `task_plan.md` |
 | `writing-plans` | `obra/superpowers` | 将已确认需求拆成可执行计划 | 根据方案生成实现计划、多步骤任务规划 |
 | `systematic-debugging` | `obra/superpowers` | bug、测试失败、构建失败、异常行为排查 | 帮我排查问题、测试失败了、定位根因 |
+| `react-execution` | 自定义推荐 | 执行阶段小步反馈循环 | 执行计划、接口兼容、供应商兼容、未知代码库改动 |
 | `verification-before-completion` | `obra/superpowers` | 完成前强制验证，避免未验证就声称完成 | 准备说完成、修好了、测试通过前 |
 
 当前会话识别到的系统内置 skills：
@@ -296,6 +297,27 @@ find ~/.codex/skills -maxdepth 2 -name SKILL.md
 ~/.codex/skills/writing-plans/SKILL.md
 ~/.codex/skills/systematic-debugging/SKILL.md
 ~/.codex/skills/verification-before-completion/SKILL.md
+```
+
+### 分场景推荐
+
+不同任务推荐显式点名不同 skill，减少自动触发歧义：
+
+| 场景 | 推荐 skill | 用法 |
+| --- | --- | --- |
+| 需求澄清、方案发散、技术取舍 | `brainstorming` | 先确认目标、边界和取舍，再进入计划或实现。 |
+| 长任务计划、跨上下文恢复 | `planning-with-files` | 生成 `task_plan.md`、`findings.md` 和 `progress.md`。 |
+| 已确认需求拆成执行计划 | `writing-plans` | 将方案拆成可执行步骤和验证命令。 |
+| bug、异常、测试失败、构建失败 | `systematic-debugging` | 先定位根因，再提出修复和验证路径。 |
+| 执行计划、接口兼容、供应商兼容、未知代码库改动 | `react-execution` | 按 `Goal -> Observe -> Decide -> Act -> Verify -> Adjust -> Final` 小步推进。 |
+| 准备声称完成、修好或测试通过前 | `verification-before-completion` | 先运行最新验证命令，再汇报结论。 |
+
+`react-execution` 适合作为执行阶段 skill，而不是替代 `brainstorming`、`writing-plans` 或 `systematic-debugging`。推荐组合：
+
+```text
+复杂新功能：brainstorming -> writing-plans/planning-with-files -> react-execution -> verification-before-completion
+Bug / 兼容问题：systematic-debugging -> react-execution -> verification-before-completion
+普通计划执行：writing-plans -> react-execution -> verification-before-completion
 ```
 
 ### 切换为完整 Superpowers 插件
