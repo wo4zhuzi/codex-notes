@@ -93,37 +93,77 @@ Spec 模式的关键不是文档长度，而是让实现者不需要再猜核心
 
 如果任务风险判断不清，默认升一级处理：从 vibe 升到 plan，从 plan 升到 spec。
 
-## ReAct Execution 的位置
+## 执行机制：Plan / Execute 与 ReAct
 
-ReAct Execution 不是 Spec，也不是 Plan。它是执行阶段的小步反馈机制，用于让 agent 在每一步行动后根据真实观察继续调整。
+三种协作模式解决的是“人和 agent 怎么分工、什么时候刹车、哪些决策要提前锁定”。ReAct 解决的是另一个层面的问题：agent 在执行阶段如何根据真实反馈推进任务。
 
-核心循环保持英文术语：
+因此，ReAct 不是第四种协作模式，也不替代 Plan 或 Spec。它是执行过程中的小步反馈循环。
 
-```text
-Goal -> Observe -> Decide -> Act -> Verify -> Adjust -> Final
-```
-
-和其他工作流的关系：
+可以把两层关系理解为：
 
 ```text
-Spec 定边界。
-Plan 拆步骤。
-ReAct Execution 跑执行循环。
-Harness 做验证反馈。
+Vibe / Plan / Spec：决定任务边界、授权方式和提前规划程度。
+ReAct：决定执行每一步时如何观察、判断、行动和修正。
+Harness：提供测试、lint、构建、日志、diff 等外部反馈。
 ```
 
-典型执行链路：
+ReAct 的核心是：
 
 ```text
-用户目标
--> Spec / Plan 锁定边界和步骤
--> ReAct Execution 小步执行
--> Harness 验证测试、lint、构建、日志和 diff
--> ReAct 根据反馈继续、修复或停止
--> Final 汇报根因、改动、验证结果和剩余风险
+Thought -> Action -> Observation -> Adjust
 ```
 
-适合强制使用 ReAct Execution 的场景：
+- `Thought`：agent 在内部判断当前状态、下一步动作和风险。
+- `Action`：agent 执行一个外部动作，例如读文件、改代码、运行测试或检查 diff。
+- `Observation`：工具、测试、日志、编译错误或 diff 返回真实反馈。
+- `Adjust`：agent 基于反馈继续、修正计划、缩小范围或停止并交还人类。
+
+这里最关键的是 `Observation`。ReAct 不是让 agent 凭感觉连续推进，而是每次外部动作后都读取真实结果，再决定下一步。没有 Observation 的 ReAct 很容易退化成“边想边猜”。
+
+`Plan -> Execute` 和 ReAct 的区别在于：
+
+```text
+Plan -> Execute：先把主要路径规划好，再按计划执行。
+ReAct：执行过程中每一步都根据 Observation 重新判断下一步。
+```
+
+两者的取舍：
+
+| 机制 | 优势 | 代价 |
+| --- | --- | --- |
+| ReAct | 对动态环境、未知代码、测试失败和接口变化的容错率更高，因为每一步都能根据 Observation 修正 | 更依赖 LLM 的步进式推理能力，也会消耗更多 token 和工具调用 |
+| Plan -> Execute | 更节省 token，对复杂任务有更好的宏观掌控力，适合先锁定范围、顺序和验收标准 | 如果执行环境变化、前置判断错误或中途出现意外，容易按原计划盲跑 |
+
+它们不是互斥关系。更推荐的做法是：
+
+```text
+先用 Plan / Spec 锁定目标、边界、步骤和验证方式。
+执行每个步骤时，用 ReAct 小步推进。
+每次 Action 后读取 Observation，再决定继续、修正、回滚局部改动或停止。
+```
+
+当 plan 链路较短、风险较低时，可以直接按计划执行并做一次验证。当 plan 链路较长、涉及未知代码、测试失败、接口兼容或跨模块影响时，应在每个执行步骤内嵌入 ReAct 循环。
+
+典型组合：
+
+```text
+Plan 阶段：
+定位上下文 -> 判断根因或现状 -> 拆步骤 -> 定义验证方式 -> 用户确认
+
+Execute 阶段：
+执行步骤 1 -> Observation -> 调整
+执行步骤 2 -> Observation -> 调整
+执行步骤 3 -> Observation -> 调整
+最终验证 -> diff/review -> 变更记录
+```
+
+一句话：
+
+```text
+Plan 负责提前想清楚方向和边界；ReAct 负责执行时不盲跑。
+```
+
+适合强制使用 ReAct 的场景：
 
 - 复杂任务、bugfix、接口兼容和供应商兼容。
 - 未知代码库排查、测试失败修复和执行已有 plan/spec 的实现步骤。
@@ -273,7 +313,7 @@ AI 编程不是单轮对话，必须考虑跨天、压缩和交接。
 日常任务建议按以下顺序执行：
 
 ```text
-确认任务风险 -> 选择 vibe/plan/spec -> 定位上下文 -> 执行或计划 -> ReAct Execution -> Harness 验证 -> 自愈 -> 记录变更 -> diff/review -> AI 准备 commit -> 用户确认 commit
+确认任务风险 -> 选择 vibe/plan/spec -> 定位上下文 -> 计划或直接执行 -> 执行阶段用 ReAct 小步闭环 -> Harness 验证 -> 自愈 -> 记录变更 -> diff/review -> AI 准备 commit -> 用户确认 commit
 ```
 
 跨天任务：
