@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RAG 笔记助手</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f7f8fb;
+        color: #1f2937;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 16px;
+        padding: 24px;
+        box-sizing: border-box;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 24px;
+        line-height: 1.2;
+      }
+
+      p {
+        margin: 0;
+        color: #4b5563;
+        line-height: 1.6;
+      }
+
+      .examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .example,
+      .send {
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #1f2937;
+        border-radius: 6px;
+        padding: 9px 12px;
+        cursor: pointer;
+      }
+
+      .send {
+        background: #0f766e;
+        border-color: #0f766e;
+        color: #ffffff;
+        min-width: 88px;
+      }
+
+      .messages {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        overflow-y: auto;
+        min-height: 380px;
+      }
+
+      .message {
+        max-width: 84%;
+        margin: 0 0 12px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+      }
+
+      .user {
+        margin-left: auto;
+        background: #ccfbf1;
+      }
+
+      .assistant {
+        background: #f3f4f6;
+      }
+
+      .error {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .sources {
+        margin: -4px 0 14px;
+        padding: 10px 12px;
+        border-left: 3px solid #0f766e;
+        background: #f8fafc;
+        color: #475569;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      form {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+      }
+
+      input {
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 12px;
+        min-width: 0;
+      }
+
+      @media (max-width: 640px) {
+        main {
+          padding: 16px;
+        }
+
+        header {
+          display: block;
+        }
+
+        .examples {
+          justify-content: flex-start;
+          margin-top: 12px;
+        }
+
+        form {
+          grid-template-columns: 1fr;
+        }
+
+        .message {
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>RAG 笔记助手</h1>
+          <p>输入问题后，后端会先检索本地 Markdown 知识库，再把相关上下文交给模型回答。</p>
+        </div>
+        <div class="examples" aria-label="示例问题">
+          <button class="example" type="button" data-message="RAG 是什么？">RAG</button>
+          <button class="example" type="button" data-message="RAG 和 Function Calling 有什么区别？">RAG vs Function</button>
+          <button class="example" type="button" data-message="MCP 和 RAG 是什么关系？">MCP</button>
+        </div>
+      </header>
+
+      <section class="messages" id="messages" aria-live="polite">
+        <div class="message assistant">可以提问：RAG 是什么、RAG 和 Function Calling 的区别、MCP 和 RAG 的关系。</div>
+      </section>
+
+      <form id="chat-form">
+        <input id="message-input" name="message" autocomplete="off" placeholder="例如：RAG 和 Function Calling 有什么区别？">
+        <button class="send" type="submit">发送</button>
+      </form>
+    </main>
+
+    <script>
+      const form = document.querySelector("#chat-form");
+      const input = document.querySelector("#message-input");
+      const messages = document.querySelector("#messages");
+      const sendButton = document.querySelector(".send");
+
+      function appendMessage(text, role) {
+        const node = document.createElement("div");
+        node.className = `message ${role}`;
+        node.textContent = text;
+        messages.appendChild(node);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      function appendSources(sources) {
+        if (!sources || sources.length === 0) {
+          return;
+        }
+
+        const node = document.createElement("div");
+        node.className = "sources";
+        node.textContent = `检索来源：\n${sources.map((source) => `- ${source.file}（${source.title}，score=${source.score}）`).join("\n")}`;
+        messages.appendChild(node);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      async function sendMessage(message) {
+        appendMessage(message, "user");
+        sendButton.disabled = true;
+        sendButton.textContent = "检索中";
+
+        try {
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message })
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            appendMessage(data.error || "查询失败。", "error");
+            return;
+          }
+          appendMessage(data.answer || "没有返回内容。", "assistant");
+          appendSources(data.sources);
+        } catch (error) {
+          appendMessage(`请求失败：${error.message}`, "error");
+        } finally {
+          sendButton.disabled = false;
+          sendButton.textContent = "发送";
+          input.focus();
+        }
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const message = input.value.trim();
+        if (!message) {
+          return;
+        }
+        input.value = "";
+        sendMessage(message);
+      });
+
+      document.querySelectorAll(".example").forEach((button) => {
+        button.addEventListener("click", () => {
+          input.value = button.dataset.message;
+          input.focus();
+        });
+      });
+    </script>
+  </body>
+</html>
