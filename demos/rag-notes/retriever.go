@@ -27,6 +27,7 @@ type Retriever struct {
 	docs []Document
 }
 
+// Knowledge Loading：启动时读取本地 Markdown 知识库到内存，后续检索不再让模型读取文件。
 func NewRetriever(knowledgeDir string) (Retriever, error) {
 	docs, err := loadDocuments(knowledgeDir)
 	if err != nil {
@@ -81,6 +82,7 @@ func extractTitle(content string, fallback string) string {
 	return strings.TrimSuffix(fallback, filepath.Ext(fallback))
 }
 
+// Retrieval：根据用户问题关键词召回 topK 篇相关文档，模型不参与这一阶段。
 func (r Retriever) Search(query string, topK int) []SearchResult {
 	query = strings.TrimSpace(query)
 	if query == "" || topK <= 0 {
@@ -120,6 +122,7 @@ func (r Retriever) Search(query string, topK int) []SearchResult {
 	return results
 }
 
+// scoreDocument 使用简单关键词评分：标题权重最高，文件路径次之，正文按出现次数累计。
 func scoreDocument(doc Document, terms []string) int {
 	file := strings.ToLower(doc.File)
 	title := strings.ToLower(doc.Title)
@@ -138,6 +141,7 @@ func scoreDocument(doc Document, terms []string) int {
 	return score
 }
 
+// queryTerms 将用户问题拆成检索词：英文按词保留，中文按相邻双字生成候选词。
 func queryTerms(query string) []string {
 	query = strings.ToLower(query)
 	seen := map[string]bool{}

@@ -61,6 +61,7 @@ func (a RAGAssistant) Run(question string) (Answer, error) {
 		return Answer{}, errors.New("请输入问题")
 	}
 
+	// 先由 Go 检索本地知识库，模型只负责基于检索结果生成答案。
 	sources := a.retriever.Search(question, a.topK)
 	if len(sources) == 0 {
 		return Answer{
@@ -76,6 +77,7 @@ func (a RAGAssistant) Run(question string) (Answer, error) {
 			"你是 RAG 知识库助手。只能基于用户问题下方提供的知识库上下文回答；如果上下文不足，直接说明不足。回答要简洁，并在末尾列出引用来源文件。",
 		),
 		Input: responses.ResponseNewParamsInputUnion{
+			// 模型收到的是增强后的 prompt，不是原始 knowledge 目录。
 			OfString: openai.String(buildPrompt(question, sources)),
 		},
 	})
@@ -90,6 +92,7 @@ func (a RAGAssistant) Run(question string) (Answer, error) {
 	return Answer{Text: text, Sources: sources}, nil
 }
 
+// Prompt Augmentation：把用户问题和 topK 检索结果拼成模型输入。
 func buildPrompt(question string, sources []SearchResult) string {
 	var b strings.Builder
 	b.WriteString("用户问题：\n")

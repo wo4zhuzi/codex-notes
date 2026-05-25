@@ -14,6 +14,28 @@
 
 这个 demo 不使用 embedding 和向量数据库，目的是先看懂 RAG 在项目中的位置。
 
+## RAG 执行过程详解
+
+当前 demo 的 RAG 链路由 Go 程序和模型共同完成，但两者职责不同：
+
+```text
+Go 程序：加载知识库 -> 检索相关文档 -> 组装增强 prompt -> 调用模型
+模型：读取增强 prompt -> 基于用户问题和检索上下文生成答案
+```
+
+这里的“检索”不是模型自己完成的，也不是把整个 `knowledge/` 目录直接发送给模型。程序启动时，`retriever.go` 会读取 `knowledge/*.md`，把每篇 Markdown 文档保存到内存中的 `Retriever.docs`。用户提问后，Go 程序会从问题中提取关键词，在已加载文档的文件名、标题和正文中做匹配与评分，然后按分数取前 `topK` 篇文档作为检索结果。
+
+拿到检索结果后，`assistant.go` 会进入 prompt augmentation 阶段：把“用户问题”和“检索命中的文档内容”拼成一个新的 prompt，再通过 OpenAI Responses API 发给模型。模型只接收这份增强后的 prompt，负责基于上下文总结、对比和组织答案，并按要求输出引用来源。
+
+因此，这个 demo 的专业分工可以描述为：
+
+```text
+Knowledge Loading：Go 启动时读取本地 Markdown 知识库。
+Retrieval：Go 根据用户问题做关键词召回和相关性排序。
+Prompt Augmentation：Go 把用户问题和 topK 检索结果拼接成模型输入。
+Generation：模型基于增强 prompt 生成面向用户的自然语言答案。
+```
+
 ## 准备环境
 
 ```bash
