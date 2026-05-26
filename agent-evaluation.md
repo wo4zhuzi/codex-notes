@@ -110,6 +110,17 @@ Agent Evaluation 分为阶段性评估和交付评估。两者不能混用。
 
 不同改动类型选择不同验收清单。不要把文档任务做成生产发布检查，也不要把权限改动按普通文档任务处理。
 
+更细的场景标准已拆到 `docs/agent-evaluation-references/`，可直接作为创建全局 `agent-evaluation` skill 时的 `references/` 模板：
+
+- [文档任务评估标准](./docs/agent-evaluation-references/docs.md)
+- [Bugfix 评估标准](./docs/agent-evaluation-references/bugfix.md)
+- [新功能评估标准](./docs/agent-evaluation-references/feature.md)
+- [重构评估标准](./docs/agent-evaluation-references/refactor.md)
+- [配置任务评估标准](./docs/agent-evaluation-references/config.md)
+- [工具集成评估标准](./docs/agent-evaluation-references/tool-integration.md)
+- [Code Review 评估标准](./docs/agent-evaluation-references/code-review.md)
+- [高风险任务评估标准](./docs/agent-evaluation-references/high-risk.md)
+
 ## 按任务类型验收
 
 ### 文档任务

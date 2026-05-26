@@ -320,6 +320,104 @@ Bug / 兼容问题：systematic-debugging -> react-execution -> verification-bef
 普通计划执行：writing-plans -> react-execution -> verification-before-completion
 ```
 
+### `agent-evaluation` 多场景 skill 设计
+
+`agent-evaluation` 适合封装为一个全局 skill，用于在任务执行中或最终总结前判断当前结果是否具备交付证据。它的职责是做验收判断，不替代测试、`/diff` 或 `/review`：
+
+- 测试、lint、typecheck、build 和 dry-run 负责提供机械验证。
+- `agent-evaluation` 负责把验证证据组织成阶段性评估或交付评估。
+- `/diff` 负责核对真实文件改动。
+- `/review` 负责审查缺陷、风险和测试缺口。
+
+推荐使用“一个 `SKILL.md` 总入口 + 多个 `references/*.md` 场景标准”的结构：
+
+```text
+~/.codex/skills/agent-evaluation/
+├── SKILL.md
+└── references/
+    ├── docs.md
+    ├── bugfix.md
+    ├── feature.md
+    ├── refactor.md
+    ├── config.md
+    ├── tool-integration.md
+    ├── code-review.md
+    └── high-risk.md
+```
+
+本仓库已提供可复制的 reference 模板，位置为 `docs/agent-evaluation-references/`。创建全局 skill 时，可将这些文件复制到 `~/.codex/skills/agent-evaluation/references/`，或让 `skill-creator` 参考这些文件生成对应内容。
+
+这样做的原因：
+
+- `SKILL.md` 保持短小，只负责判断阶段、项目风险和任务类型。
+- 场景细节放入 `references/`，只在需要时读取，避免每次触发都加载全部标准。
+- 不拆成多个独立 skill，避免触发边界重叠、metadata 膨胀和维护成本上升。
+
+场景边界建议：
+
+| 场景 | 评估边界 | 必须验证 | 停止线 |
+| --- | --- | --- | --- |
+| 文档任务 | 内容准确、链接存在、结构一致、无敏感信息 | `git status`、敏感信息扫描、链接目标、变更记录 | 真实密钥、链接目标不存在、内容与现有规则冲突 |
+| Bugfix | 根因和修复必须能解释原始失败 | 复现失败、失败用例通过、相关测试通过 | 无法复现、根因无证据、连续 3 轮验证失败 |
+| 新功能 | 满足需求边界和关键路径 | 测试、构建、关键流程验收 | 需求边界不清、核心行为无测试或验收标准 |
+| 重构 | 外部行为不变，结构变化不替代行为验证 | 调用方检查、相关测试、diff 范围 | public API 意外变化、无关大面积重排 |
+| 配置任务 | 格式合法、默认值清楚、兼容影响明确 | 配置解析、dry-run 或加载测试、敏感信息扫描 | 生产默认值变化未确认、真实 token 或私有地址 |
+| RAG / MCP / Function Calling | 工具链可控、失败可解释、权限边界明确 | 正常路径、参数错误、工具失败、权限不足 | 工具输出和回答冲突、权限边界不清 |
+| Code Review | 基于真实 diff 找行为风险 | 文件行号、严重度、测试缺口 | 未看 diff、泛泛评价、无证据结论 |
+| 高风险生产变更 | 权限、安全、数据、支付、发布必须严格验收 | 测试、dry-run、回滚方案、审计或日志影响、人类确认 | 生产影响不清、回滚方案缺失、涉及真实数据但无确认 |
+
+高风险场景不是独立替代其他场景，而是叠加标准。例如生产配置变更应同时参考 `references/config.md` 和 `references/high-risk.md`。
+
+使用 `skill-creator` 创建该 skill 时，可使用以下提示词：
+
+```text
+使用 skill-creator，帮我创建一个个人 Codex skill：agent-evaluation。
+
+目标：
+这个 skill 用于在 AI Agent 完成任务前，根据任务阶段、项目风险和改动类型选择合适的评估标准，判断当前结果是可交付、部分完成，还是必须停止交给人。
+
+请按以下结构创建：
+- ~/.codex/skills/agent-evaluation/SKILL.md
+- ~/.codex/skills/agent-evaluation/references/docs.md
+- ~/.codex/skills/agent-evaluation/references/bugfix.md
+- ~/.codex/skills/agent-evaluation/references/feature.md
+- ~/.codex/skills/agent-evaluation/references/refactor.md
+- ~/.codex/skills/agent-evaluation/references/config.md
+- ~/.codex/skills/agent-evaluation/references/tool-integration.md
+- ~/.codex/skills/agent-evaluation/references/code-review.md
+- ~/.codex/skills/agent-evaluation/references/high-risk.md
+
+SKILL.md 要求：
+1. frontmatter name 为 agent-evaluation。
+2. description 明确说明：当用户要求验收、完成前检查、评估 Agent 输出、判断是否可交付、检查验证证据、区分阶段性评估和交付评估时触发。
+3. 主体保持精简，只包含：
+   - 先判断当前是阶段性评估还是交付评估。
+   - 再判断项目风险：个人文档、普通应用、生产核心。
+   - 再判断改动类型：文档、bugfix、新功能、重构、配置、工具集成、review、高风险。
+   - 根据类型读取对应 references 文件。
+   - 最终输出：目标、证据、验证命令、未验证项、风险、交付状态。
+4. 不要创建 README、安装说明或额外无关文件。
+
+references 文件要求：
+每个文件只写该场景的评估边界、必须验证项、停止线和最终输出要求。
+默认使用简体中文。
+可参考当前仓库的 docs/agent-evaluation-references/ 目录生成。
+```
+
+使用示例：
+
+```text
+使用 agent-evaluation skill，对当前任务做阶段性评估。
+```
+
+```text
+使用 agent-evaluation skill，对本次任务做交付评估。
+```
+
+```text
+使用 agent-evaluation skill，按 bugfix 场景评估本次修复。
+```
+
 ### 切换为完整 Superpowers 插件
 
 如果希望使用完整 Superpowers 方法论，可以安装完整 Superpowers 插件。完整插件会包含 `brainstorming`、`writing-plans`、`systematic-debugging`、`test-driven-development`、`using-git-worktrees`、`subagent-driven-development`、`requesting-code-review` 等一整套流程。
