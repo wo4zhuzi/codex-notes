@@ -404,7 +404,7 @@ git status --short
 推荐提交前顺序：
 
 ```text
-运行验证命令 -> 确认 docs/changes 记录 -> /diff -> /review -> AI 准备 commit -> 用户授权 commit -> 用户单独授权 push
+运行验证命令 -> Agent Evaluation 验收 -> 确认 docs/changes 记录 -> /diff -> /review -> AI 准备 commit -> 用户授权 commit -> 用户单独授权 push
 ```
 
 AI 汇报 commit 准备信息时建议使用：
@@ -437,6 +437,31 @@ PR 描述建议包含：
 - 验证命令和结果。
 - 已知风险和未覆盖项。
 - 是否涉及配置默认值、数据迁移或发布流程变化。
+
+## Agent Evaluation：任务验收
+
+Agent Evaluation 用于在最终总结、`/diff` 和 `/review` 前检查任务是否具备交付证据。它不替代测试、`/diff` 或 `/review`：
+
+- Agent Evaluation 判断是否具备交付证据。
+- `/diff` 检查真实文件改动。
+- `/review` 检查缺陷、风险和测试缺口。
+
+阶段性评估用于开发过程中，判断下一步能否继续；交付评估用于任务结束前，判断当前结果能否收尾。完整方法见 [Agent 评估与验证](./agent-evaluation.md)。
+
+可复制 prompt：
+
+```text
+先不要总结。请按 Agent Evaluation 检查本次任务：
+1. 当前是阶段性评估还是交付评估？
+2. 本任务属于什么项目风险和改动类型？
+3. 目标是否完成？
+4. 根因或现状判断依据是什么？
+5. 修改了哪些文件，是否都在任务范围内？
+6. 运行了哪些验证命令，结果是什么？
+7. 哪些内容没有验证？
+8. 是否需要生成或更新 docs/changes/？
+9. 当前是可交付、部分完成，还是必须停止交给人？
+```
 
 ## /review：提交前代码审查
 
