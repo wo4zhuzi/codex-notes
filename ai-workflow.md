@@ -199,6 +199,8 @@ TDD 的完整操作流程、测试清单模板和可复制 prompt 见 [TDD 实�
 
 ## Harness Engineering 原则
 
+上下文管理决定 agent 看见什么，Harness Engineering 决定 agent 如何被约束、验证和恢复。具体上下文选择、压缩、恢复和沉淀方式见 [Agent 上下文管理](./context-management.md)。
+
 ### 地图而非手册
 
 `AGENTS.md` 应该是导航地图，而不是百科全书。建议控制在 300 行以内，重点写：

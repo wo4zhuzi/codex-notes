@@ -265,6 +265,8 @@ MCP 的原理、认证、server 设计、安全边界和排查清单见 [Codex M
 
 `/mention` 用于把某个文件、目录或上下文明确交给 Codex，减少它在全项目中无谓搜索或误读无关文件。
 
+从上下文管理角度看，`/mention` 是上下文收敛：范围明确时优先指定相关文件；范围不明确时先让 Codex 搜索定位。更多原则见 [Agent 上下文管理](./context-management.md)。
+
 典型用法：
 
 ```text
