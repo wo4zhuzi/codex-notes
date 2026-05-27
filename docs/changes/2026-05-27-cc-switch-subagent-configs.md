@@ -37,7 +37,7 @@
 
 - 新增 `cc-switch-configs/dev-subagent-review.toml`：
   - 开启 `multi_agent = true`。
-  - 主 agent 使用 `model_reasoning_effort = "exhigh"`。
+  - 主 agent 使用 `model_reasoning_effort = "xhigh"`。
   - 约束 subagent 只读并行审查 PR / 分支风险。
 - 新增 `cc-switch-configs/dev-subagent-bugfix.toml`：
   - 开启 `multi_agent = true`。

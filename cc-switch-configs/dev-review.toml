@@ -35,7 +35,7 @@ developer_instructions = """
 # - 需要实现修复：切换到 dev-main.toml
 
 review_model = "gpt-5.5"
-model_reasoning_effort = "exhigh"
+model_reasoning_effort = "xhigh"
 disable_response_storage = true
 personality = "pragmatic"
 

@@ -115,7 +115,7 @@ model_reasoning_effort = "high"
 # - 默认工程开发模式
 # - 适用于大多数工程开发场景
 
-# exhigh：
+# xhigh：
 # - 深度分析模式
 # - 用于复杂系统问题定位与设计
 
@@ -124,7 +124,7 @@ model_reasoning_effort = "high"
 
 # 适用场景切换建议：
 
-# 使用 exhigh：
+# 使用 xhigh：
 # - 复杂问题排查（多模块联动）
 # - 性能瓶颈分析
 # - 架构设计评审
@@ -432,7 +432,7 @@ Subagent 是专项审查员或取证员：
 主 agent 建议使用：
 
 ```toml
-model_reasoning_effort = "exhigh"
+model_reasoning_effort = "xhigh"
 ```
 
 原因是主 agent 需要做最终裁决：合并重复 findings、处理互相矛盾的结论、判断严重级别和决定是否进入修复。

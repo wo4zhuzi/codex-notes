@@ -22,7 +22,7 @@ developer_instructions = """
 # 控制 Codex 在审查场景中使用只读 subagent 并行取证，再由主 agent 做最终裁决。
 
 # 当前策略：
-# - 主 agent 使用 exhigh 做最终审查判断
+# - 主 agent 使用 xhigh 做最终审查判断
 # - 普通取证类 subagent 建议使用 medium
 # - 高风险审查类 subagent 建议使用 high
 # - 所有审查类 subagent 默认只读
@@ -38,7 +38,7 @@ developer_instructions = """
 # - 需要直接实现修复：切换到 dev-main.toml 或 dev-subagent-bugfix.toml
 
 review_model = "gpt-5.5"
-model_reasoning_effort = "exhigh"
+model_reasoning_effort = "xhigh"
 disable_response_storage = true
 personality = "pragmatic"
 

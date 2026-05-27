@@ -22,7 +22,7 @@ developer_instructions = """
 # 控制 Codex 在复杂 Bugfix 场景中先并行定位根因，再由主 agent 串行修复。
 
 # 当前策略：
-# - 主 agent 使用 exhigh 做根因裁决和修复决策
+# - 主 agent 使用 xhigh 做根因裁决和修复决策
 # - Subagent 默认只读，避免并行写代码造成冲突
 # - 并发线程数低于审查场景，减少排查噪声
 
@@ -37,7 +37,7 @@ developer_instructions = """
 # - 纯审查不修复：切换到 dev-subagent-review.toml
 
 review_model = "gpt-5.5"
-model_reasoning_effort = "exhigh"
+model_reasoning_effort = "xhigh"
 disable_response_storage = true
 personality = "pragmatic"
 

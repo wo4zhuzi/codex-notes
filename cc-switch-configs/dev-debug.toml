@@ -35,7 +35,7 @@ developer_instructions = """
 # - 已知根因修复：可减少分析步骤
 
 review_model = "gpt-5.5"
-model_reasoning_effort = "exhigh"
+model_reasoning_effort = "xhigh"
 disable_response_storage = true
 personality = "pragmatic"
 

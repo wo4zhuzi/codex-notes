@@ -22,7 +22,7 @@ developer_instructions = """
 # 控制 Codex 在新项目或新模块场景中先锁定 Spec/Plan，再用 subagent 做专项审查。
 
 # 当前策略：
-# - 主 agent 使用 exhigh 做方案裁决和执行统筹
+# - 主 agent 使用 xhigh 做方案裁决和执行统筹
 # - Subagent 分别承担架构、测试、安全、文档/API 审查
 # - 实现阶段仍由主 agent 串行改动，避免多 agent 并行写入冲突
 
@@ -37,7 +37,7 @@ developer_instructions = """
 # - 架构讨论不实现：切换到 dev-arch.toml
 
 review_model = "gpt-5.5"
-model_reasoning_effort = "exhigh"
+model_reasoning_effort = "xhigh"
 disable_response_storage = true
 personality = "pragmatic"
 
