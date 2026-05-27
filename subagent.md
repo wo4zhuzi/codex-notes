@@ -79,6 +79,48 @@ worker
 
 说明这些 TOML 没有被本次会话注册成可调用 `agent_type`。此时即使提示词里写“让 pr-explorer 分析影响范围”，也只是让通用 subagent 扮演这个角色，不会自动读取 `pr-explorer.toml`。
 
+### 查看运行时 agent_type
+
+检查 agent 是否真正生效时，要区分“配置文件存在”和“当前运行时已加载”：
+
+- `~/.codex/agents/` 或 `.codex/agents/` 中存在 TOML，只能说明 agent 配置已放到注册目录。
+- 当前 Codex 会话的 `spawn_agent` 工具 schema 中出现对应名称，才说明本次会话已加载成可调用的 `agent_type`。
+
+最直接的查看方式是在当前 Codex 会话中询问：
+
+```text
+当前运行时 spawn_agent 暴露了哪些 agent_type？
+```
+
+如果运行时已加载自定义 agent，回答中应能看到类似：
+
+```text
+compat-reviewer
+docs-researcher
+pr-explorer
+risk-reviewer
+security-reviewer
+test-impact-reviewer
+default
+explorer
+worker
+```
+
+也可以在终端里先检查注册文件：
+
+```bash
+find ~/.codex/agents .codex/agents -maxdepth 1 -type f -name '*.toml' 2>/dev/null
+```
+
+这个命令只能确认本地文件是否存在，不能证明当前会话已经加载。要检查模型实际可见的运行时工具 schema，可尝试：
+
+```bash
+codex debug prompt-input '查看当前可用 agent_type' \
+  | rg -n "Available roles|agent_type|pr-explorer|risk-reviewer|security-reviewer|test-impact-reviewer|docs-researcher|compat-reviewer"
+```
+
+`codex debug prompt-input` 依赖 Codex CLI 版本、本地权限和当前运行环境；如果命令因沙箱或权限失败，不等于 agent 未加载。最终仍应以当前会话中 `spawn_agent` 暴露的 `Available roles` 为准。
+
 ## 如何调用 agent
 
 如果自定义 agent 已注册，主 agent 应直接创建对应类型：
