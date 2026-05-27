@@ -51,7 +51,17 @@ Codex 相关使用笔记与配置模板。
     ├── dev-debug.toml
     ├── dev-cheap.toml
     ├── dev-review.toml
-    └── dev-arch.toml
+    ├── dev-arch.toml
+    ├── dev-subagent-review.toml
+    ├── dev-subagent-bugfix.toml
+    ├── dev-subagent-project.toml
+    └── subagents/
+        ├── pr-explorer.toml
+        ├── test-impact-reviewer.toml
+        ├── risk-reviewer.toml
+        ├── security-reviewer.toml
+        ├── compat-reviewer.toml
+        └── docs-researcher.toml
 ```
 
 ## 快速入口
@@ -84,8 +94,14 @@ Codex 相关使用笔记与配置模板。
 - `dev-cheap.toml`：低成本、轻量任务配置。
 - `dev-review.toml`：代码审查、质量检查配置。
 - `dev-arch.toml`：架构设计、复杂方案评审配置。
+- `dev-subagent-review.toml`：PR / 分支审查和发布前质量把关配置。
+- `dev-subagent-bugfix.toml`：复杂 bug 根因定位和修复配置。
+- `dev-subagent-project.toml`：多步骤项目执行和并行审查配置。
+- `subagents/*.toml`：只读审查角色模板，例如 `pr-explorer`、`test-impact-reviewer`、`risk-reviewer`。
 
 使用时可根据当前任务切换对应配置，避免在速度、成本和推理强度之间频繁手动调整。
+
+配置中的 `review_model`、`model_reasoning_effort` 等值是当前仓库模板示例，更新时间为 2026-05-27。实际使用前应按当前 Codex / CC-Switch 版本、供应商支持模型和成本策略确认。
 
 ## 使用建议
 

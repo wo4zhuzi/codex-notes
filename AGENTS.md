@@ -2,15 +2,16 @@
 
 ## 项目结构与模块组织
 
-本仓库是 Codex / Claude Code 使用笔记与配置模板集合，当前无应用源码、构建产物或自动化测试目录。
+本仓库是 Codex / Claude Code 使用笔记、配置模板和少量 Go demo 的集合。根目录以 Markdown 文档为主；`demos/` 下包含可运行示例源码和对应 Go 测试。
 
 - `README.md`：仓库入口、内容索引和使用建议。
 - `codex-cli.md`、`codex-core-commands.md`、`codex-skills.md`、`cc-swtich.md`：按主题拆分的使用笔记。
 - `external-tools/`：外部工具使用笔记，记录 CodeGraph、Serena、Context7、ast-grep 等可辅助 AI 编程的工具安装、配置、MCP 接入和使用方式。
+- `demos/`：Function Calling 与 RAG 示例项目，包含 Go 源码、README 和 `*_test.go`。
 - `docs/changes/`：按日期记录每次 AI 会话产生的仓库改动，文件名格式为 `YYYY-MM-DD-<topic>.md`。
-- `cc-switch-configs/`：CC-Switch 场景化 TOML 配置模板，例如 `dev-main.toml`、`dev-review.toml`。
+- `cc-switch-configs/`：CC-Switch 场景化 TOML 配置模板，例如 `dev-main.toml`、`dev-review.toml`，以及 `subagents/` 下的只读审查角色模板。
 
-新增通用主题笔记优先放在根目录 Markdown 文档中；外部工具类笔记放入 `external-tools/`；会话变更记录放入 `docs/changes/`；仅配置模板放入 `cc-switch-configs/`。`cc-swtich.md` 文件名暂保持不变，避免破坏已有链接。
+新增通用主题笔记优先放在根目录 Markdown 文档中；外部工具类笔记放入 `external-tools/`；demo 源码放入 `demos/<topic>/`；会话变更记录放入 `docs/changes/`；仅配置模板放入 `cc-switch-configs/`。`cc-swtich.md` 文件名暂保持不变，避免破坏已有链接。
 
 ## AI 协作工作流
 
@@ -45,7 +46,7 @@
 
 ## 构建、测试与本地检查命令
 
-本项目没有包管理器脚本或编译步骤。提交前建议执行以下本地检查：
+本项目没有仓库级包管理器脚本或统一编译步骤。提交前建议执行以下本地检查：
 
 ```bash
 git status --short
@@ -61,6 +62,13 @@ rg -n "TODO|FIXME|your-api-key|sk-" .
 markdownlint README.md *.md
 ```
 
+如果改动涉及 `demos/` 下的 Go 示例，还应运行对应目录测试：
+
+```bash
+cd demos/function-calling-orders && go test ./...
+cd demos/rag-notes && go test ./...
+```
+
 ## 编码风格与命名约定
 
 - 文档默认使用简体中文，保留工具名、命令名和配置键的英文原文。
@@ -71,11 +79,13 @@ markdownlint README.md *.md
 
 ## 测试指南
 
-当前仓库没有自动化测试框架。修改文档时需手动验证：
+根目录文档修改以手动验证为主：
 
 - Markdown 链接路径是否存在，例如 `./cc-switch-configs`。
 - 示例命令是否仍与文档上下文一致。
 - 配置文件是否为合法 TOML；可用支持 TOML 的编辑器或 CLI 工具检查。
+
+`demos/function-calling-orders` 和 `demos/rag-notes` 是独立 Go module，包含自动化测试。修改 demo 源码、模板、测试数据或 README 示例命令时，需在对应 demo 目录运行 `go test ./...`。
 
 涉及安装步骤、第三方工具参数或模型名称时，应标注来源或更新时间，避免过期说明误导使用者。
 

@@ -102,6 +102,12 @@ http://127.0.0.1:8080
 - `templates/index.html`：网页聊天界面。
 - `go.mod`、`go.sum`：Go 模块依赖。
 
+## 验证
+
+```bash
+go test ./...
+```
+
 ## 注意事项
 
 - 这个 demo 不访问真实订单系统。
