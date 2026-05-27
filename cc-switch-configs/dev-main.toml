@@ -1,8 +1,6 @@
 # 日常开发配置（推荐默认）
 # 适用于常规需求开发、Bug 修复、接口联调和中等复杂度问题排查。
 
-profile = "dev-main"
-
 developer_instructions = """
 请使用中文回答。
 

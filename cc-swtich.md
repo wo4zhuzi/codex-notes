@@ -334,6 +334,8 @@ max_rollout_age_days = 45
 
 多套配置已拆分到 [cc-switch-configs](./cc-switch-configs/) 目录，便于单独维护和复制使用。
 
+注意：这些文件是整份配置模板，不要在模板顶层添加 `profile = "..."`。Codex 的 `--profile` 会从 `config.toml` 中查找已定义的 `[profiles.<name>]`，如果顶层 `profile` 指向未定义名称，会出现 `Error loading configuration: config profile <name> not found`。按文件模板切换时，应让 CC-Switch 覆盖整份配置，或使用 Codex 的 `--profile-v2 <name>` 加载独立配置文件。
+
 | 配置文件 | 场景 | 推荐用途 |
 | --- | --- | --- |
 | [dev-main.toml](./cc-switch-configs/dev-main.toml) | 日常开发配置 | 常规需求开发、Bug 修复、接口联调 |

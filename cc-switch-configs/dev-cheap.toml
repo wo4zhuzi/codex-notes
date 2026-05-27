@@ -1,8 +1,6 @@
 # 低成本快速处理配置
 # 适用于文档整理、格式转换、简单脚本、轻量代码生成和低风险批处理任务。
 
-profile = "dev-cheap"
-
 developer_instructions = """
 请使用中文回答。
 

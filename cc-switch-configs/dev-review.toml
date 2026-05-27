@@ -1,8 +1,6 @@
 # 代码审查配置
 # 适用于 Pull Request 审查、重构评估、安全检查、测试覆盖评估和发布前质量把关。
 
-profile = "dev-review"
-
 developer_instructions = """
 请使用中文回答。
 

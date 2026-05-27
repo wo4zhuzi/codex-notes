@@ -1,8 +1,6 @@
 # 问题排查与调试配置
 # 适用于线上问题定位、异常堆栈分析、日志排查、性能退化和复杂 Bug 修复。
 
-profile = "dev-debug"
-
 developer_instructions = """
 请使用中文回答。
 

@@ -1,8 +1,6 @@
 # Subagent 新项目开发配置
 # 适用于新项目开发、新模块设计、高不确定性功能落地和阶段性专项审查。
 
-profile = "dev-subagent-project"
-
 developer_instructions = """
 请使用中文回答。
 

@@ -1,8 +1,6 @@
 # Subagent 分支审查配置
 # 适用于 Pull Request 审查、分支审查、发布前质量把关和多视角风险检查。
 
-profile = "dev-subagent-review"
-
 developer_instructions = """
 请使用中文回答。
 

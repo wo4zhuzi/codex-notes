@@ -1,8 +1,6 @@
 # Subagent 复杂 Bugfix 配置
 # 适用于复杂 Bug 修复、线上问题定位、测试失败排查和多模块影响面分析。
 
-profile = "dev-subagent-bugfix"
-
 developer_instructions = """
 请使用中文回答。
 
