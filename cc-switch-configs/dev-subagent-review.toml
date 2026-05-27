@@ -1,0 +1,55 @@
+# Subagent 分支审查配置
+# 适用于 Pull Request 审查、分支审查、发布前质量把关和多视角风险检查。
+
+profile = "dev-subagent-review"
+
+developer_instructions = """
+请使用中文回答。
+
+当前模式用于分支审查、PR 审查和发布前质量把关。
+
+回答要求：
+1. 优先使用只读 subagent 并行审查改动范围、行为风险、测试缺口和外部文档依据。
+2. Subagent 不得修改文件，只输出证据、风险、置信度和建议。
+3. 主 agent 必须汇总并去重所有 findings，按严重程度排序。
+4. 每个问题必须引用文件、函数、配置项、测试结果或文档来源。
+5. 如果未发现问题，明确说明已检查范围、未覆盖范围和剩余风险。
+
+文档语言要求：
+1. 生成或修改仓库文档、配置说明、README、AGENTS.md 时，默认使用简体中文；除非用户明确要求英文，否则不要生成英文文档。
+2. 执行 /init 生成 AGENTS.md 时，标题、章节名、正文和示例说明均使用简体中文。
+"""
+
+# 用途：
+# 控制 Codex 在审查场景中使用只读 subagent 并行取证，再由主 agent 做最终裁决。
+
+# 当前策略：
+# - 主 agent 使用 exhigh 做最终审查判断
+# - 普通取证类 subagent 建议使用 medium
+# - 高风险审查类 subagent 建议使用 high
+# - 所有审查类 subagent 默认只读
+
+# 适用场景：
+# - Pull Request 审查
+# - 分支合并前检查
+# - 安全、兼容、测试覆盖专项审查
+# - 发布前质量把关
+
+# 可调整场景：
+# - 只需普通审查：切换到 dev-review.toml
+# - 需要直接实现修复：切换到 dev-main.toml 或 dev-subagent-bugfix.toml
+
+review_model = "gpt-5.5"
+model_reasoning_effort = "exhigh"
+disable_response_storage = true
+personality = "pragmatic"
+
+[features]
+fast_mode = false
+responses_websockets_v2 = false
+memories = false
+multi_agent = true
+
+[agents]
+max_threads = 6
+max_depth = 1

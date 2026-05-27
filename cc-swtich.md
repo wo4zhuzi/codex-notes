@@ -341,5 +341,134 @@ max_rollout_age_days = 45
 | [dev-cheap.toml](./cc-switch-configs/dev-cheap.toml) | 低成本快速处理配置 | 文档整理、格式转换、简单脚本 |
 | [dev-debug.toml](./cc-switch-configs/dev-debug.toml) | 问题排查与调试配置 | 线上问题定位、日志排查、复杂 Bug 修复 |
 | [dev-review.toml](./cc-switch-configs/dev-review.toml) | 代码审查配置 | PR 审查、重构评估、测试覆盖检查 |
+| [dev-subagent-review.toml](./cc-switch-configs/dev-subagent-review.toml) | Subagent 分支审查配置 | 只读并行审查 PR / 分支风险 |
+| [dev-subagent-bugfix.toml](./cc-switch-configs/dev-subagent-bugfix.toml) | Subagent 复杂 Bugfix 配置 | 并行定位根因，主 agent 串行修复 |
+| [dev-subagent-project.toml](./cc-switch-configs/dev-subagent-project.toml) | Subagent 新项目开发配置 | 先 Spec/Plan，再做架构、测试、安全专项审查 |
 
 推荐默认使用 `dev-main.toml`。当任务复杂度明显升高时切换到 `dev-arch.toml` 或 `dev-debug.toml`；当任务低风险且追求响应速度时使用 `dev-cheap.toml`。
+
+## Subagent 场景配置
+
+Subagent 场景建议单独配置，而不是直接改动日常开发配置。原因是 subagent 会放大并发工具调用、token 消耗和上下文汇总成本，适合在审查、复杂排查和新项目设计阶段显式启用。
+
+推荐新增三类 CC-Switch 配置：
+
+- `dev-subagent-review.toml`：用于分支审查和 PR 审查。Subagent 默认只读，负责并行取证和专项初判；主 agent 负责去重、排序和最终审查结论。
+- `dev-subagent-bugfix.toml`：用于复杂 Bugfix。Subagent 只负责日志、错误、调用链、测试失败和影响面分析；修复动作由主 agent 串行执行。
+- `dev-subagent-project.toml`：用于新项目或新模块。先进入 Spec/Plan，再让 subagent 分别审查架构边界、测试策略、安全风险和文档/API 依据。
+
+具体 custom subagent 模板放在：
+
+```text
+cc-switch-configs/subagents/
+```
+
+这个目录是仓库内的模板源，方便复制和维护；Codex 不会自动读取这里的文件。实际启用时，需要复制到全局或项目级 agents 目录。
+
+三类配置的共同核心开关：
+
+```toml
+[features]
+fast_mode = false
+responses_websockets_v2 = false
+memories = false
+multi_agent = true
+
+[agents]
+max_threads = 6
+max_depth = 1
+```
+
+配置取舍：
+
+- `multi_agent = true`：启用 Codex 多 agent 能力。
+- `max_threads = 4` 到 `6`：限制并发线程，避免审查结果过多导致主 agent 难以收口。
+- `max_depth = 1`：只允许主 agent 派生一层 subagent，避免递归分派失控。
+- `memories = false`：保持多项目隔离，避免跨项目上下文污染。
+
+### Subagent 模板安装
+
+全局安装适合通用审查角色，所有项目都能复用：
+
+```bash
+mkdir -p ~/.codex/agents
+cp cc-switch-configs/subagents/*.toml ~/.codex/agents/
+```
+
+项目级安装适合绑定某个项目的业务规则、权限边界或领域术语：
+
+```bash
+mkdir -p .codex/agents
+cp cc-switch-configs/subagents/*.toml .codex/agents/
+```
+
+推荐先使用全局安装；如果某个项目需要更严格约束，再把模板复制到项目级 `.codex/agents/` 并单独调整。
+
+修改 `cc-switch-configs/subagents/` 下的模板后，需要重新复制到 `~/.codex/agents/` 或 `.codex/agents/`。如果当前 Codex 会话已经启动，建议重启会话，确保新 agent 配置被加载。
+
+### 主 agent 与 subagent 分工
+
+主 agent 是审查负责人和最终执行者：
+
+- 明确任务目标、审查范围和验证方式。
+- 决定派发哪些 subagent。
+- 限定 subagent 只读或专项范围。
+- 汇总 subagent 结果，去重、处理冲突结论并按严重级别排序。
+- 在需要修改代码时串行执行修复，并运行最终验证。
+
+Subagent 是专项审查员或取证员：
+
+- `pr-explorer`：分析 diff、入口点、调用链和影响范围。
+- `docs-researcher`：核对官方文档、API 行为、模型和工具版本说明。
+- `risk-reviewer`：检查 correctness、数据一致性、并发和错误处理风险。
+- `security-reviewer`：检查权限、密钥、注入、敏感日志和供应链配置。
+- `compat-reviewer`：检查接口兼容、配置兼容、迁移和回滚风险。
+- `test-impact-reviewer`：判断测试覆盖、回归路径和缺失用例。
+
+### Subagent 推理强度建议
+
+主 agent 建议使用：
+
+```toml
+model_reasoning_effort = "exhigh"
+```
+
+原因是主 agent 需要做最终裁决：合并重复 findings、处理互相矛盾的结论、判断严重级别和决定是否进入修复。
+
+取证类 subagent 建议使用：
+
+```toml
+model_reasoning_effort = "medium"
+```
+
+适用于 `pr-explorer` 和 `docs-researcher`。这类 agent 主要负责枚举、查证和归纳，`medium` 通常足够，且能控制并发成本。
+
+高风险审查类 subagent 建议使用：
+
+```toml
+model_reasoning_effort = "high"
+```
+
+适用于 `risk-reviewer`、`security-reviewer`、`compat-reviewer` 和 `test-impact-reviewer`。这类 agent 需要判断风险是否成立，不只是收集证据，因此应提高推理强度。
+
+不建议把所有 subagent 默认设为 `high`。这样会增加延迟、费用和长篇分析噪声，主 agent 汇总时也更容易被低价值细节干扰。
+
+### 推荐口令
+
+分支审查：
+
+```text
+请使用只读 subagent 审查当前分支相对 main 的改动，不要修改文件。让 pr-explorer 分析影响范围，risk-reviewer 检查行为风险，security-reviewer 检查安全问题，test-impact-reviewer 检查测试缺口，docs-researcher 核对外部 API 或框架行为。最后由主 agent 汇总 findings，按严重程度排序。
+```
+
+复杂 Bugfix：
+
+```text
+请使用只读 subagent 先定位这个问题的根因，不要修改文件。分别分析错误日志、调用链、相关测试失败和影响面。等所有 subagent 返回后，由主 agent 汇总根因判断、最小修复方案和验证计划，再开始修复。
+```
+
+新项目开发：
+
+```text
+请先进入 Spec/Plan，不要直接实现。使用 subagent 分别审查架构边界、测试策略、安全风险和外部文档依据。主 agent 汇总后给出目标、非目标、实施步骤、验证方式和风险边界。
+```

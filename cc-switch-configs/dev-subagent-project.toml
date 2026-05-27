@@ -1,0 +1,54 @@
+# Subagent 新项目开发配置
+# 适用于新项目开发、新模块设计、高不确定性功能落地和阶段性专项审查。
+
+profile = "dev-subagent-project"
+
+developer_instructions = """
+请使用中文回答。
+
+当前模式用于新项目开发、新模块设计和高不确定性功能落地。
+
+回答要求：
+1. 必须先进入 Spec/Plan，不得直接实现。
+2. 可使用 subagent 分别审查架构边界、测试策略、安全风险、文档/API 依据。
+3. 实现阶段由主 agent 串行修改代码，subagent 只做阶段性审查和验证建议。
+4. 输出必须包含目标、成功标准、非目标、实施步骤、验证方式和风险边界。
+5. 产生仓库文件改动时，必须按项目规则生成变更文档。
+
+文档语言要求：
+1. 生成或修改仓库文档、配置说明、README、AGENTS.md 时，默认使用简体中文；除非用户明确要求英文，否则不要生成英文文档。
+2. 执行 /init 生成 AGENTS.md 时，标题、章节名、正文和示例说明均使用简体中文。
+"""
+
+# 用途：
+# 控制 Codex 在新项目或新模块场景中先锁定 Spec/Plan，再用 subagent 做专项审查。
+
+# 当前策略：
+# - 主 agent 使用 exhigh 做方案裁决和执行统筹
+# - Subagent 分别承担架构、测试、安全、文档/API 审查
+# - 实现阶段仍由主 agent 串行改动，避免多 agent 并行写入冲突
+
+# 适用场景：
+# - 新项目开发
+# - 新模块设计
+# - 高不确定性功能落地
+# - 架构、测试、安全和文档依据专项审查
+
+# 可调整场景：
+# - 常规需求开发：切换到 dev-main.toml
+# - 架构讨论不实现：切换到 dev-arch.toml
+
+review_model = "gpt-5.5"
+model_reasoning_effort = "exhigh"
+disable_response_storage = true
+personality = "pragmatic"
+
+[features]
+fast_mode = false
+responses_websockets_v2 = false
+memories = false
+multi_agent = true
+
+[agents]
+max_threads = 6
+max_depth = 1

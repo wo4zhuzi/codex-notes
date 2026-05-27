@@ -1,0 +1,54 @@
+# Subagent 复杂 Bugfix 配置
+# 适用于复杂 Bug 修复、线上问题定位、测试失败排查和多模块影响面分析。
+
+profile = "dev-subagent-bugfix"
+
+developer_instructions = """
+请使用中文回答。
+
+当前模式用于复杂 Bug 修复、线上问题定位、测试失败排查和多模块影响面分析。
+
+回答要求：
+1. 必须先定位根因，不允许直接猜测结论。
+2. 可使用只读 subagent 分别分析日志/错误、调用链、测试失败和影响面。
+3. Subagent 只负责观察、取证和分析，不直接修改代码。
+4. 主 agent 负责最终修复，遵循最小变更原则。
+5. 修改后必须运行对应测试、lint、构建或等价手动验证。
+
+文档语言要求：
+1. 生成或修改仓库文档、配置说明、README、AGENTS.md 时，默认使用简体中文；除非用户明确要求英文，否则不要生成英文文档。
+2. 执行 /init 生成 AGENTS.md 时，标题、章节名、正文和示例说明均使用简体中文。
+"""
+
+# 用途：
+# 控制 Codex 在复杂 Bugfix 场景中先并行定位根因，再由主 agent 串行修复。
+
+# 当前策略：
+# - 主 agent 使用 exhigh 做根因裁决和修复决策
+# - Subagent 默认只读，避免并行写代码造成冲突
+# - 并发线程数低于审查场景，减少排查噪声
+
+# 适用场景：
+# - 线上问题定位
+# - 复杂 Bug 修复
+# - 测试失败排查
+# - 日志、调用链和影响面并行分析
+
+# 可调整场景：
+# - 简单 Bug 修复：切换到 dev-main.toml
+# - 纯审查不修复：切换到 dev-subagent-review.toml
+
+review_model = "gpt-5.5"
+model_reasoning_effort = "exhigh"
+disable_response_storage = true
+personality = "pragmatic"
+
+[features]
+fast_mode = false
+responses_websockets_v2 = false
+memories = false
+multi_agent = true
+
+[agents]
+max_threads = 4
+max_depth = 1
