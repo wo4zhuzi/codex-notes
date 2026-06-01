@@ -46,6 +46,52 @@
 
 `SKILL.md` 是 skill 的主说明文件，里面定义该 skill 的使用规则、触发方式和执行流程。
 
+### 项目级 Skills
+
+除了全局安装到 `~/.codex/skills/` 的 skills，也可以在项目内放置只对当前仓库生效的项目级 skill。
+
+常见项目级结构：
+
+```text
+.agents/skills/{skill-name}/SKILL.md
+.agents/skills/{skill-name}/scripts/
+.agents/skills/{skill-name}/references/
+.agents/skills/{skill-name}/assets/
+skills-lock.json
+```
+
+三类 skill 的区别：
+
+| 类型 | 典型路径 | 生效范围 |
+| --- | --- | --- |
+| 系统 skill | `~/.codex/skills/.system/{skill-name}/SKILL.md` | Codex 内置能力 |
+| 全局 skill | `~/.codex/skills/{skill-name}/SKILL.md` | 本机所有项目 |
+| 项目级 skill | `.agents/skills/{skill-name}/SKILL.md` | 当前仓库 |
+
+项目级 skill 适合沉淀只服务当前项目的工作流，例如已有项目重设计、领域专用审查、项目专属发布检查、内部架构约束等。
+
+`skills-lock.json` 是项目级 skills 的锁文件或清单，作用类似依赖锁文件：
+
+- 记录当前项目安装或引用了哪些 skills。
+- 帮助后续会话或团队成员恢复一致的项目级 skill 状态。
+- 降低只靠目录扫描导致的来源、版本或缓存不一致风险。
+
+如果 `skills-lock.json` 由工具自动生成，通常应和 `.agents/skills/` 一起提交。但提交前要检查是否包含本机绝对路径、真实 token、私有代理地址或内部服务 URL。
+
+`AGENTS.md` 不负责注册 skill。Codex 发现 skill 主要依赖运行时加载约定目录和锁文件；`AGENTS.md` 更适合写“本项目有哪些重要 skill、什么时候优先使用”，用于提高触发稳定性。
+
+推荐在 `AGENTS.md` 中只写短规则，不复制完整 `SKILL.md` 内容：
+
+```markdown
+## 项目级 Skills
+
+本项目包含项目级 skill：
+
+- `redesign-existing-projects`：用于现有项目 UI / 交互重设计任务。
+
+当用户要求重设计现有项目、优化已有页面体验、在不重写业务逻辑的前提下调整 UI 时，优先使用该 skill。
+```
+
 ## 使用方式
 
 ### `planning-with-files` 使用规范
@@ -480,6 +526,12 @@ Plugins -> Coding -> Superpowers -> +
 用 openai-docs 查一下 Responses API 的最新用法。
 ```
 
+项目级 skill 也可以直接点名：
+
+```text
+使用 redesign-existing-projects skill，帮我重设计当前项目的已有页面。
+```
+
 ### 使用已安装 skill
 
 安装并重启 Codex 后，有两种使用方式：
@@ -530,7 +582,21 @@ find ~/.codex/skills -maxdepth 4 -type f
 
 如果能看到 `.system/{skill-name}/SKILL.md`，说明本地存在对应 skill。
 
-### 3. 看当前会话上下文
+### 3. 查看项目级 skill 文件
+
+```shell
+find .agents/skills -maxdepth 4 -name SKILL.md
+```
+
+如果当前项目存在 `skills-lock.json`，也可以检查：
+
+```shell
+test -f skills-lock.json && echo "has project skills lock"
+```
+
+项目级 skill 文件存在，只能说明仓库中有对应 skill；是否被当前会话识别，还要看 Codex 运行时是否加载了项目级 skills。
+
+### 4. 看当前会话上下文
 
 如果当前会话启动时出现 `Available skills` 列表，说明 Codex 已经识别到 skills。
 
@@ -550,12 +616,19 @@ find ~/.codex/skills -maxdepth 4 -type f
 
 不成立。`memories` 和 `skills` 是不同能力。
 
+### 误判四：项目级 skill 必须写进 `AGENTS.md` 才能被发现
+
+不成立。`AGENTS.md` 不是 skill 注册表。项目级 skill 的发现依赖 Codex 运行时加载 `.agents/skills/` 和 `skills-lock.json` 等约定位置。
+
+但在 `AGENTS.md` 中写明项目级 skill 的使用场景仍然有价值：它可以帮助 Agent 在任务描述不够明确时优先选择正确 skill，减少自动触发歧义。
+
 ## 推荐实践
 
 1. 需要特定 skill 时，直接在任务中点名 skill，减少触发歧义。
 2. 创建自定义 skill 时，使用 `skill-creator`，不要手写零散结构。
 3. 安装第三方 skill 时，使用 `skill-installer`，并确认来源可信。
 4. 不建议在 `config.toml` 中添加未确认支持的 feature 开关，避免配置被忽略或产生兼容问题。
+5. 项目级 skill 的完整规则放在 `.agents/skills/{skill-name}/SKILL.md`，`AGENTS.md` 只保留短说明和触发场景。
 
 ## 排查流程
 
@@ -567,6 +640,13 @@ find ~/.codex/skills -maxdepth 4 -type f
 find ~/.codex/skills -maxdepth 4 -type f
 ```
 
-2. 确认 `~/.codex/config.toml` 中没有异常关闭项。
-3. 在请求中显式点名 skill，例如 `使用 skill-creator ...`。
-4. 如果仍未触发，检查该 skill 的 `SKILL.md` 触发条件是否匹配当前任务。
+2. 如果是项目级 skill，确认项目内是否存在 skill 文件和锁文件：
+
+```shell
+find .agents/skills -maxdepth 4 -name SKILL.md
+test -f skills-lock.json && echo "has project skills lock"
+```
+
+3. 确认 `~/.codex/config.toml` 中没有异常关闭项。
+4. 在请求中显式点名 skill，例如 `使用 skill-creator ...` 或 `使用 redesign-existing-projects skill ...`。
+5. 如果仍未触发，检查该 skill 的 `SKILL.md` 触发条件是否匹配当前任务，必要时把 description 写得更具体。
