@@ -23,6 +23,11 @@ CodeGraph / Understand Anything / 源码验证
 
 不要把 `next-ai-draw-io` 当成代码理解工具。它更适合把已经整理好的架构、流程、依赖关系渲染成 draw.io 图。
 
+不要把 Docker 运行 Web 应用和 MCP 接入混为一谈：
+
+- MCP 接入：Codex 启动或连接 `@next-ai-drawio/mcp-server`，通过 MCP 工具生成、编辑和导出图。
+- Docker 运行 Web 应用：本地访问 `next-ai-draw-io` 的网页界面，使用它自己的前端和模型配置。
+
 ## 解决什么问题
 
 `next-ai-draw-io` 是一个基于 Next.js 的 AI draw.io 图表工具，可以通过自然语言生成、修改和增强 draw.io 图。适合：
@@ -39,7 +44,7 @@ CodeGraph / Understand Anything / 源码验证
 
 ### 前置条件
 
-本地 MCP 接入需要 Node.js、npm 和 npx：
+如果使用 `npx` 方式接入 MCP，Codex 所在环境需要 Node.js、npm 和 npx：
 
 ```bash
 node --version
@@ -87,75 +92,6 @@ http://localhost:6002
 
 `.env.local` 中的模型供应商、模型名和 API Key 按自己的供应商配置。不要把真实 `.env.local` 提交到 Git。
 
-### Docker 运行
-
-Docker 方式适合只想本地跑 Web 应用、不想安装前端依赖的场景。注意：这是运行 `next-ai-draw-io` Web 应用，不是 MCP 接入。只通过 MCP 使用 draw.io 时，不需要 Docker、不需要 `.env`，也不需要给 `next-ai-draw-io` 单独配置 API Key。
-
-最直接的方式是在命令里传环境变量：
-
-```bash
-docker run -d -p 3000:3000 \
-  -e AI_PROVIDER=openai \
-  -e AI_MODEL=gpt-4o \
-  -e OPENAI_API_KEY=your_api_key \
-  ghcr.io/dayuanjiang/next-ai-draw-io:latest
-```
-
-也可以使用 `.env` 文件。这个 `.env` 来自官方仓库根目录的 `env.example`。
-
-如果已经 clone 官方仓库：
-
-```bash
-git clone https://github.com/DayuanJiang/next-ai-draw-io
-cd next-ai-draw-io
-cp env.example .env
-docker run -d -p 3000:3000 --env-file .env ghcr.io/dayuanjiang/next-ai-draw-io:latest
-```
-
-如果不想 clone 仓库，只想拿配置模板：
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/DayuanJiang/next-ai-draw-io/main/env.example -o .env
-docker run -d -p 3000:3000 --env-file .env ghcr.io/dayuanjiang/next-ai-draw-io:latest
-```
-
-这里的 `your_api_key` 只是占位符，实际使用时换成自己的供应商配置，并确保 `.env` 不进入 Git。
-
-### Docker Compose 运行
-
-更推荐用 Docker Compose 管理 Web 应用和可选的私有 draw.io 服务。可以在本地新建 `docker-compose.yml`：
-
-```yaml
-services:
-  next-ai-draw-io:
-    image: ghcr.io/dayuanjiang/next-ai-draw-io:latest
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
-    restart: unless-stopped
-
-  drawio:
-    image: jgraph/drawio:latest
-    ports:
-      - "8080:8080"
-    restart: unless-stopped
-```
-
-启动：
-
-```bash
-docker compose up -d
-```
-
-访问：
-
-```text
-http://localhost:3000
-```
-
-如果需要让 Web 应用使用本地 draw.io 服务，可在 `.env` 中配置自己的 draw.io 地址。具体变量名以官方 `env.example` 为准。
-
 ## 基础使用
 
 直接在 Web 应用或 MCP 客户端里用自然语言描述要画的图：
@@ -193,10 +129,18 @@ Create a flowchart showing user authentication with login, MFA, and session mana
 
 `next-ai-draw-io` 的 MCP server 是自包含服务，会通过 stdio 接收 MCP 工具调用，并启动内嵌 HTTP server 在浏览器中实时预览图。
 
-推荐先用 `npx` 方式接入，不做全局安装：
+先判断 `@next-ai-drawio/mcp-server` 运行在哪里，再选择对应注册方式。
+
+| 场景 | 推荐命令 | 说明 |
+| --- | --- | --- |
+| Codex 所在环境有 Node / npx | `codex mcp add drawio -- npx -y @next-ai-drawio/mcp-server@latest` | 最简单，不需要全局安装。 |
+| MCP server 装在已运行容器里 | `codex mcp add drawio -- docker exec -i <容器名> npx -y @next-ai-drawio/mcp-server@latest` | Codex 通过 `docker exec` 进入容器启动 stdio MCP server。 |
+| MCP server 用镜像一次性启动 | `codex mcp add drawio -- docker run --rm -i <镜像名>` | Codex 每次需要 MCP 时启动临时容器，退出后自动清理。 |
+
+如果 Codex 所在环境已经有 Node.js，推荐先用 `npx` 方式接入，不做全局安装：
 
 ```bash
-codex mcp add drawio -- npx @next-ai-drawio/mcp-server@latest
+codex mcp add drawio -- npx -y @next-ai-drawio/mcp-server@latest
 ```
 
 安全提示：`@next-ai-drawio/mcp-server` 旧版本曾存在资源限制相关漏洞。建议使用 `@latest`，或明确固定到 `0.1.19` 及以上版本。
@@ -204,7 +148,27 @@ codex mcp add drawio -- npx @next-ai-drawio/mcp-server@latest
 Claude Code CLI 可用：
 
 ```bash
-claude mcp add drawio -- npx @next-ai-drawio/mcp-server@latest
+claude mcp add drawio -- npx -y @next-ai-drawio/mcp-server@latest
+```
+
+如果 MCP server 只安装在某个已经运行的容器里，不能直接写 `npx ...`，因为 `npx` 会在 Codex 所在环境执行。应改为：
+
+```bash
+codex mcp add drawio -- docker exec -i <容器名> npx -y @next-ai-drawio/mcp-server@latest
+```
+
+这里的 `-i` 必须保留。stdio MCP 依赖标准输入和标准输出传递 JSON-RPC 消息，缺少 `-i` 时 Codex 可能无法和容器内进程保持会话。
+
+如果你已经把 MCP server 做成独立镜像，更推荐一次性容器方式：
+
+```bash
+codex mcp add drawio -- docker run --rm -i <镜像名>
+```
+
+如镜像入口不是 MCP server，则显式指定命令：
+
+```bash
+codex mcp add drawio -- docker run --rm -i <镜像名> npx -y @next-ai-drawio/mcp-server@latest
 ```
 
 通用 MCP 客户端配置：
@@ -214,7 +178,7 @@ claude mcp add drawio -- npx @next-ai-drawio/mcp-server@latest
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["@next-ai-drawio/mcp-server@latest"]
+      "args": ["-y", "@next-ai-drawio/mcp-server@latest"]
     }
   }
 }
@@ -268,7 +232,7 @@ AI 使用时应先启动 session，再创建或编辑图。遇到 `No active ses
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["@next-ai-drawio/mcp-server@latest"],
+      "args": ["-y", "@next-ai-drawio/mcp-server@latest"],
       "env": {
         "PORT": "6003"
       }
@@ -290,7 +254,7 @@ https://embed.diagrams.net
   "mcpServers": {
     "drawio": {
       "command": "npx",
-      "args": ["@next-ai-drawio/mcp-server@latest"],
+      "args": ["-y", "@next-ai-drawio/mcp-server@latest"],
       "env": {
         "DRAWIO_BASE_URL": "https://drawio.example.com"
       }
@@ -368,3 +332,72 @@ skill 内部应先结合 Understand Anything、CodeGraph 和必要源码整理�
 ### 图和代码事实不一致
 
 回到事实来源重新检查：源码、测试、运行结果、CodeGraph 查询和 Understand Anything 图谱。`next-ai-draw-io` 只负责画图，不负责判断代码结构是否真实。
+
+## Docker 运行 Web 应用
+
+Docker 方式适合只想本地跑 `next-ai-draw-io` Web 应用、不想安装前端依赖的场景。注意：这是运行网页应用，不是 Codex MCP 接入。只通过 MCP 使用 draw.io 时，不需要 Docker、不需要 `.env`，也不需要给 `next-ai-draw-io` 单独配置模型 API Key。
+
+最直接的方式是在命令里传环境变量：
+
+```bash
+docker run -d -p 3000:3000 \
+  -e AI_PROVIDER=openai \
+  -e AI_MODEL=gpt-4o \
+  -e OPENAI_API_KEY=OPENAI_API_KEY_PLACEHOLDER \
+  ghcr.io/dayuanjiang/next-ai-draw-io:latest
+```
+
+也可以使用 `.env` 文件。这个 `.env` 来自官方仓库根目录的 `env.example`。
+
+如果已经 clone 官方仓库：
+
+```bash
+git clone https://github.com/DayuanJiang/next-ai-draw-io
+cd next-ai-draw-io
+cp env.example .env
+docker run -d -p 3000:3000 --env-file .env ghcr.io/dayuanjiang/next-ai-draw-io:latest
+```
+
+如果不想 clone 仓库，只想拿配置模板：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/DayuanJiang/next-ai-draw-io/main/env.example -o .env
+docker run -d -p 3000:3000 --env-file .env ghcr.io/dayuanjiang/next-ai-draw-io:latest
+```
+
+这里的 `OPENAI_API_KEY_PLACEHOLDER` 只是占位符，实际使用时换成自己的供应商配置，并确保 `.env` 不进入 Git。
+
+### Docker Compose 运行
+
+更推荐用 Docker Compose 管理 Web 应用和可选的私有 draw.io 服务。可以在本地新建 `docker-compose.yml`：
+
+```yaml
+services:
+  next-ai-draw-io:
+    image: ghcr.io/dayuanjiang/next-ai-draw-io:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  drawio:
+    image: jgraph/drawio:latest
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+```
+
+启动：
+
+```bash
+docker compose up -d
+```
+
+访问：
+
+```text
+http://localhost:3000
+```
+
+如果需要让 Web 应用使用本地 draw.io 服务，可在 `.env` 中配置自己的 draw.io 地址。具体变量名以官方 `env.example` 为准。
