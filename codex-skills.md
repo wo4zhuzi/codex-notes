@@ -239,60 +239,6 @@ python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-githu
 
 私有仓库需要本机已有 GitHub 凭据，或配置 `GITHUB_TOKEN` / `GH_TOKEN`。
 
-### 安装 Understand Anything
-
-`Understand Anything` 是跨平台项目理解工具。它在 Claude Code 中通过 plugin marketplace 安装；在 Codex 中推荐通过官方安装脚本把相关 skills 链接到 Codex 可发现的 skills 目录。
-
-Codex 安装方式对应官网表格中的 `install.sh codex`：
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Lum1104/Understand-Anything/main/install.sh | bash -s codex
-```
-
-安装脚本会执行本机文件改动，建议用户先阅读脚本内容，再自行运行。AI 不应在未获得明确授权时自动执行该安装命令。
-
-Codex 侧安装后的关键位置：
-
-```text
-~/.understand-anything/repo
-~/.understand-anything-plugin
-~/.agents/skills
-```
-
-其中 `~/.agents/skills` 是 Codex 可发现的用户级 skills 目录。安装脚本会把 `understand-anything-plugin/skills/` 下的能力按 skill 链接到这里。安装完成后需要重启 Codex，新的 Understand Anything skills 才会在会话中生效。
-
-更新：
-
-```bash
-~/.understand-anything/repo/install.sh --update
-```
-
-卸载 Codex 侧安装：
-
-```bash
-~/.understand-anything/repo/install.sh --uninstall codex
-```
-
-安装后可用下面的只读命令确认链接状态：
-
-```bash
-find ~/.agents/skills -maxdepth 2 -type f -name SKILL.md | sort
-```
-
-如果安装后 Codex 没有识别到相关 skills，优先检查：
-
-- 是否已经重启 Codex。
-- `~/.agents/skills` 下是否存在 Understand Anything 相关 `SKILL.md`。
-- 安装脚本是否因网络、权限或 Git 失败中断。
-- 当前会话的 skills 列表是否过长，导致初始上下文只展示了部分 skills。
-
-与 CodeGraph 搭配时，推荐分工：
-
-- Understand Anything：先建立全局认知，例如项目图谱、业务域、模块边界和关键文件。
-- CodeGraph：再做精确结构查询，例如符号定义、调用方、被调用方、影响面和 staged diff 结构审查。
-
-不要把 Understand Anything 或 CodeGraph 的输出当成最终事实；关键结论仍要回到源码、测试、日志或运行结果验证。
-
 ### 安装后验证
 
 1. 确认目录存在：
@@ -547,6 +493,60 @@ Plugins -> Coding -> Superpowers -> +
 - 完整 Superpowers 插件流程更重，会更积极地触发规划、TDD、review、worktree 和分支收尾等规范。
 - 如果安装完整 Superpowers 插件，建议删除或停用单独安装的同名 skills，避免 `brainstorming` 等同名 skill 出现重复来源导致触发行为不稳定。
 - 如果只需要轻量工程闭环，优先保留单独安装的四个 skills。
+
+### 特殊安装：Understand Anything
+
+`Understand Anything` 是跨平台项目理解工具。它在 Claude Code 中通过 plugin marketplace 安装；在 Codex 中推荐通过官方安装脚本把相关 skills 链接到 Codex 可发现的 skills 目录。
+
+Codex 安装方式对应官网表格中的 `install.sh codex`：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Lum1104/Understand-Anything/main/install.sh | bash -s codex
+```
+
+安装脚本会执行本机文件改动，建议用户先阅读脚本内容，再自行运行。AI 不应在未获得明确授权时自动执行该安装命令。
+
+Codex 侧安装后的关键位置：
+
+```text
+~/.understand-anything/repo
+~/.understand-anything-plugin
+~/.agents/skills
+```
+
+其中 `~/.agents/skills` 是 Codex 可发现的用户级 skills 目录。安装脚本会把 `understand-anything-plugin/skills/` 下的能力按 skill 链接到这里。安装完成后需要重启 Codex，新的 Understand Anything skills 才会在会话中生效。
+
+更新：
+
+```bash
+~/.understand-anything/repo/install.sh --update
+```
+
+卸载 Codex 侧安装：
+
+```bash
+~/.understand-anything/repo/install.sh --uninstall codex
+```
+
+安装后可用下面的只读命令确认链接状态：
+
+```bash
+find ~/.agents/skills -maxdepth 2 -type f -name SKILL.md | sort
+```
+
+如果安装后 Codex 没有识别到相关 skills，优先检查：
+
+- 是否已经重启 Codex。
+- `~/.agents/skills` 下是否存在 Understand Anything 相关 `SKILL.md`。
+- 安装脚本是否因网络、权限或 Git 失败中断。
+- 当前会话的 skills 列表是否过长，导致初始上下文只展示了部分 skills。
+
+与 CodeGraph 搭配时，推荐分工：
+
+- Understand Anything：先建立全局认知，例如项目图谱、业务域、模块边界和关键文件。
+- CodeGraph：再做精确结构查询，例如符号定义、调用方、被调用方、影响面和 staged diff 结构审查。
+
+不要把 Understand Anything 或 CodeGraph 的输出当成最终事实；关键结论仍要回到源码、测试、日志或运行结果验证。
 
 ### 自动触发
 
