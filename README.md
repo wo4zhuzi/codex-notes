@@ -14,6 +14,7 @@ Codex 相关使用笔记与配置模板。
 - Codex 与 Claude Code 的协作方式、规则文件融合和跨工具接续。
 - Codex plugin 的定位、安装方式，以及与 skill 的区别。
 - Codex Skills 的触发、安装与 Understand Anything 的 Codex 安装方式。
+- 个人自建 Skills 的命名、模板库、组合型工作流和 `my-` 前缀规范。
 - codex-plugin-cc 在 Claude Code 中调用 Codex 的插件化协作流程。
 - Codex Subagent 注册、调用和多 agent 审查流程。
 - Function Calling 原理和订单查询 demo。
@@ -43,6 +44,9 @@ Codex 相关使用笔记与配置模板。
 ├── codex-cli.md
 ├── codex-core-commands.md
 ├── codex-skills.md
+├── personal-skills.md
+├── my-skills/
+│   └── my-codebase-intel/
 ├── subagent.md
 ├── function-calling.md
 ├── rag.md
@@ -92,6 +96,7 @@ Codex 相关使用笔记与配置模板。
 - [Codex CLI 使用笔记](./codex-cli.md)
 - [Codex 核心指令](./codex-core-commands.md)
 - [Codex Skills 使用笔记](./codex-skills.md)
+- [个人自建 Skills](./personal-skills.md)
 - [Codex Subagent 使用笔记](./subagent.md)
 - [Function Calling 使用笔记](./function-calling.md)
 - [RAG 使用笔记](./rag.md)
@@ -135,13 +140,14 @@ Codex 相关使用笔记与配置模板。
 12. Spec 确认后，核心业务逻辑参考 [TDD 实践手册](./tdd-workflow.md)，先用测试锁定行为再实现。
 13. 再阅读 [Codex CLI 使用笔记](./codex-cli.md)，完成 Codex CLI 安装与登录。
 14. 继续阅读 [Codex Skills 使用笔记](./codex-skills.md)，了解 skills 的触发方式、安装方式、排查流程和 Understand Anything 的 Codex 接入方式。
-15. 如需使用多 agent 审查或专项取证，阅读 [Codex Subagent 使用笔记](./subagent.md)。
-16. 如需理解知识库问答和检索增强生成，阅读 [RAG 使用笔记](./rag.md)，并运行 `demos/rag-notes/`。
-17. 如需接入外部工具或文档服务，阅读 [Codex MCP 使用笔记](./mcp.md)。
-18. 如需让 AI 使用 CodeGraph 等外部工具，阅读 [外部工具使用笔记](./external-tools)。
-19. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
-20. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
-21. 修改配置前建议保留原始配置备份，方便回滚。
+15. 如果要把多个 skills、MCP 或外部工具固定成个人工作流，阅读 [个人自建 Skills](./personal-skills.md)。
+16. 如需使用多 agent 审查或专项取证，阅读 [Codex Subagent 使用笔记](./subagent.md)。
+17. 如需理解知识库问答和检索增强生成，阅读 [RAG 使用笔记](./rag.md)，并运行 `demos/rag-notes/`。
+18. 如需接入外部工具或文档服务，阅读 [Codex MCP 使用笔记](./mcp.md)。
+19. 如需让 AI 使用 CodeGraph 等外部工具，阅读 [外部工具使用笔记](./external-tools)。
+20. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
+21. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
+22. 修改配置前建议保留原始配置备份，方便回滚。
 
 执行会产生仓库改动的任务时，建议遵循 [Codex 核心指令](./codex-core-commands.md) 中的流程：先规划、再让 AI 检查计划、执行后在 `docs/changes/` 生成日期开头的变更文档，最后检查 diff 并审查风险。
 

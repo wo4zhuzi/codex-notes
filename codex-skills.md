@@ -70,6 +70,24 @@ skills-lock.json
 
 项目级 skill 适合沉淀只服务当前项目的工作流，例如已有项目重设计、领域专用审查、项目专属发布检查、内部架构约束等。
 
+### 个人自建 Skills
+
+个人自建 skill 适合沉淀自己的固定工作流，例如把多个第三方 skills、MCP 工具、外部 CLI 和验证步骤组合成一条可复用流程。
+
+推荐统一使用 `my-` 前缀区分个人自建 skill 和三方 skill：
+
+```text
+~/.codex/skills/my-codebase-intel/SKILL.md
+~/.codex/skills/my-debug-flow/SKILL.md
+.agents/skills/my-project-flow/SKILL.md
+```
+
+三方 skill 保持原名，例如 `brainstorming`、`writing-plans`、`systematic-debugging`、`understand`。不要把个人 skill 写进 `~/.codex/skills/.system/`。
+
+完整命名、目录、元数据和组合型工作流模板见 [个人自建 Skills](./personal-skills.md)。
+
+本仓库的个人 skill 模板集中放在 `my-skills/`，例如 `my-skills/my-codebase-intel/SKILL.md`。该目录是模板库，不是 Codex 自动发现目录；真实启用时仍需复制或链接到 `~/.codex/skills/{skill-name}/` 或 `.agents/skills/{skill-name}/`。
+
 `skills-lock.json` 是项目级 skills 的锁文件或清单，作用类似依赖锁文件：
 
 - 记录当前项目安装或引用了哪些 skills。
