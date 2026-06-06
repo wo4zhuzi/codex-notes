@@ -24,6 +24,8 @@
   - 说明 `PORT`、`DRAWIO_BASE_URL`、`start_session`、`create_new_diagram`、`edit_diagram`、`get_diagram`、`export_diagram` 的用途。
   - 补充 MCP 连接后的实时预览流程：先 `start_session`，再通过带 `?mcp=` 的浏览器页面预览图。
   - 明确 MCP 模式下不需要给 `next-ai-draw-io` 单独配置模型 API Key；模型推理由 Codex / Claude 负责。
+  - 补充 `.env` 来源：从官方仓库根目录 `env.example` 复制，或通过 GitHub raw 地址下载。
+  - 增加 Docker Compose 示例，使用 `env_file: .env` 管理 Web 应用配置，并可选启动私有 draw.io 服务。
   - 增加 MCP server 旧版本安全提示，建议使用 `@latest` 或 `0.1.19` 及以上版本。
   - 增加与 CodeGraph、Understand Anything、`my-codebase-intel` 的搭配方式和提示词。
 - 更新 `external-tools/README.md`：

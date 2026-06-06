@@ -89,7 +89,9 @@ http://localhost:6002
 
 ### Docker 运行
 
-官方 README 提供 Docker 方式。适合只想本地跑 Web 应用、不想安装前端依赖的场景：
+Docker 方式适合只想本地跑 Web 应用、不想安装前端依赖的场景。注意：这是运行 `next-ai-draw-io` Web 应用，不是 MCP 接入。只通过 MCP 使用 draw.io 时，不需要 Docker、不需要 `.env`，也不需要给 `next-ai-draw-io` 单独配置 API Key。
+
+最直接的方式是在命令里传环境变量：
 
 ```bash
 docker run -d -p 3000:3000 \
@@ -99,14 +101,60 @@ docker run -d -p 3000:3000 \
   ghcr.io/dayuanjiang/next-ai-draw-io:latest
 ```
 
-也可以使用环境变量文件：
+也可以使用 `.env` 文件。这个 `.env` 来自官方仓库根目录的 `env.example`。
+
+如果已经 clone 官方仓库：
 
 ```bash
+git clone https://github.com/DayuanJiang/next-ai-draw-io
+cd next-ai-draw-io
 cp env.example .env
 docker run -d -p 3000:3000 --env-file .env ghcr.io/dayuanjiang/next-ai-draw-io:latest
 ```
 
+如果不想 clone 仓库，只想拿配置模板：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/DayuanJiang/next-ai-draw-io/main/env.example -o .env
+docker run -d -p 3000:3000 --env-file .env ghcr.io/dayuanjiang/next-ai-draw-io:latest
+```
+
 这里的 `your_api_key` 只是占位符，实际使用时换成自己的供应商配置，并确保 `.env` 不进入 Git。
+
+### Docker Compose 运行
+
+更推荐用 Docker Compose 管理 Web 应用和可选的私有 draw.io 服务。可以在本地新建 `docker-compose.yml`：
+
+```yaml
+services:
+  next-ai-draw-io:
+    image: ghcr.io/dayuanjiang/next-ai-draw-io:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  drawio:
+    image: jgraph/drawio:latest
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+```
+
+启动：
+
+```bash
+docker compose up -d
+```
+
+访问：
+
+```text
+http://localhost:3000
+```
+
+如果需要让 Web 应用使用本地 draw.io 服务，可在 `.env` 中配置自己的 draw.io 地址。具体变量名以官方 `env.example` 为准。
 
 ## 基础使用
 
