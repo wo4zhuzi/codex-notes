@@ -11,7 +11,7 @@
 ## 执行计划
 
 1. 在 `my-skills/my-codebase-intel/SKILL.md` 增加架构图/流程图生成任务类型。
-2. 明确事实来源与出图工具分工：Understand Anything、CodeGraph、源码和验证命令负责事实，`next-ai-draw-io` MCP 只负责 draw.io 图创建、编辑、读取或导出。
+2. 明确事实来源与出图工具分工：Understand Anything、CodeGraph、源码和验证命令负责事实，`next-ai-draw-io` MCP 只负责 draw.io 图预览、创建、编辑、读取或导出。
 3. 补充架构图输出要求，包括文字版架构摘要、节点、边、分组、层级、标签和颜色含义。
 4. 补充流程图输出要求，包括流程摘要、开始节点、结束节点、步骤、判断分支、异常路径和跨模块调用。
 5. 更新 `agents/openai.yaml`，让默认提示词使用短表达。
@@ -21,6 +21,8 @@
 - 更新 `my-skills/my-codebase-intel/SKILL.md`：
   - 扩展 skill 描述和默认原则，加入架构图/流程图生成与可选 `next-ai-draw-io` MCP。
   - 新增“架构图/流程图生成”任务类型，包含短触发示例、执行流程、默认图谱分层和常用标记。
+  - 补充 draw.io MCP 会话顺序：先调用 `start_session` 打开浏览器实时预览，确认 `?mcp=` 会话，再创建、编辑或导出图。
+  - 明确 MCP 模式下不需要给 `next-ai-draw-io` 单独配置模型 API Key。
   - 在输出要求和边界中强调图谱事实来源与 draw.io 渲染结果的区别。
 - 更新 `my-skills/my-codebase-intel/agents/openai.yaml`：
   - 调整 `short_description` 和 `default_prompt`，突出代码库分析与 draw.io 架构图/流程图生成。

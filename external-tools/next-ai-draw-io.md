@@ -174,6 +174,19 @@ claude mcp add drawio -- npx @next-ai-drawio/mcp-server@latest
 
 配置后重启对应 MCP 客户端，再让 AI 创建图。官方 MCP README 说明图会在浏览器中实时出现。
 
+### 是否需要 API Key
+
+通过 Codex / Claude 的 MCP 使用 `next-ai-draw-io` 时，不需要给 `next-ai-draw-io` 单独配置模型 API Key：
+
+```text
+Codex / Claude 负责 LLM 推理
+next-ai-draw-io MCP 负责浏览器预览、创建图、编辑图、读取 XML 和导出 .drawio
+```
+
+因此 MCP 配置中通常不需要 `OPENAI_API_KEY`、`AI_PROVIDER` 或 `AI_MODEL`。这些变量只在你直接运行 `next-ai-draw-io` Web 应用、Docker 应用，并使用它自己的 AI 聊天能力时才需要。
+
+`DRAWIO_BASE_URL` 不是模型 Key。它只用于指定 draw.io embed 服务地址，例如改成私有 draw.io 部署。
+
 ### MCP 工具能力
 
 官方 MCP server 提供的主要工具：
@@ -187,6 +200,16 @@ claude mcp add drawio -- npx @next-ai-drawio/mcp-server@latest
 | `export_diagram` | 导出 `.drawio` 文件。 |
 
 AI 使用时应先启动 session，再创建或编辑图。遇到 `No active session` 时，先调用 `start_session`。
+
+连接后的典型流程：
+
+```text
+1. AI 调用 start_session。
+2. 浏览器打开实时预览页，URL 通常带 ?mcp= 参数。
+3. AI 调用 create_new_diagram 或 edit_diagram。
+4. 用户在浏览器中看到图实时更新。
+5. 需要保存时，AI 调用 get_diagram 或 export_diagram。
+```
 
 ### 端口和私有 draw.io
 
@@ -257,7 +280,7 @@ docker run -d -p 8080:8080 jgraph/drawio
 使用 my-codebase-intel 把这个项目整理成 draw.io 生成流程图。
 ```
 
-skill 内部应先结合 Understand Anything、CodeGraph 和必要源码整理事实，再使用 `next-ai-draw-io` MCP 出图。
+skill 内部应先结合 Understand Anything、CodeGraph 和必要源码整理事实，再调用 `start_session` 打开 draw.io MCP 实时预览，最后使用 `next-ai-draw-io` MCP 出图。MCP 模式下不需要给 `next-ai-draw-io` 单独配置模型 API Key。
 
 ## 什么时候让 AI 使用
 

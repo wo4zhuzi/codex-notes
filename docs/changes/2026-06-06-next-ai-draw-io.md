@@ -22,6 +22,8 @@
   - 记录在线 demo、桌面应用、本地源码运行、Docker 运行和 MCP 接入方式。
   - 记录 `codex mcp add drawio -- npx @next-ai-drawio/mcp-server@latest` 和通用 MCP JSON 配置。
   - 说明 `PORT`、`DRAWIO_BASE_URL`、`start_session`、`create_new_diagram`、`edit_diagram`、`get_diagram`、`export_diagram` 的用途。
+  - 补充 MCP 连接后的实时预览流程：先 `start_session`，再通过带 `?mcp=` 的浏览器页面预览图。
+  - 明确 MCP 模式下不需要给 `next-ai-draw-io` 单独配置模型 API Key；模型推理由 Codex / Claude 负责。
   - 增加 MCP server 旧版本安全提示，建议使用 `@latest` 或 `0.1.19` 及以上版本。
   - 增加与 CodeGraph、Understand Anything、`my-codebase-intel` 的搭配方式和提示词。
 - 更新 `external-tools/README.md`：
