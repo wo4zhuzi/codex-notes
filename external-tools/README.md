@@ -15,6 +15,7 @@
 | 工具 | 文档 | 适用场景 |
 | --- | --- | --- |
 | CodeGraph | [codegraph.md](./codegraph.md) | 为代码库建立函数级依赖图，让 AI 查询符号、调用链、影响面和结构上下文。 |
+| Next AI Draw.io | [next-ai-draw-io.md](./next-ai-draw-io.md) | 通过 MCP 让 AI 生成、编辑和导出 draw.io 架构图、流程图和模块依赖图。 |
 
 ## 推荐文档结构
 

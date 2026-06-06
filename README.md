@@ -20,7 +20,7 @@ Codex 相关使用笔记与配置模板。
 - Function Calling 原理和订单查询 demo。
 - RAG 原理和本地 Markdown 知识库问答 demo。
 - Codex MCP 使用、原理和服务端设计思路。
-- CodeGraph 等外部工具的安装、配置和 MCP 接入流程。
+- CodeGraph、Next AI Draw.io 等外部工具的安装、配置和 MCP 接入流程。
 - CC-Switch 安装与服务商切换说明。
 - 面向不同开发场景的 CC-Switch 配置模板。
 
@@ -57,7 +57,8 @@ Codex 相关使用笔记与配置模板。
 │   └── rag-notes/
 ├── external-tools/
 │   ├── README.md
-│   └── codegraph.md
+│   ├── codegraph.md
+│   └── next-ai-draw-io.md
 ├── docs/
 │   └── changes/
 │       └── YYYY-MM-DD-<topic>.md
@@ -144,7 +145,7 @@ Codex 相关使用笔记与配置模板。
 16. 如需使用多 agent 审查或专项取证，阅读 [Codex Subagent 使用笔记](./subagent.md)。
 17. 如需理解知识库问答和检索增强生成，阅读 [RAG 使用笔记](./rag.md)，并运行 `demos/rag-notes/`。
 18. 如需接入外部工具或文档服务，阅读 [Codex MCP 使用笔记](./mcp.md)。
-19. 如需让 AI 使用 CodeGraph 等外部工具，阅读 [外部工具使用笔记](./external-tools)。
+19. 如需让 AI 使用 CodeGraph、Next AI Draw.io 等外部工具，阅读 [外部工具使用笔记](./external-tools)。
 20. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
 21. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
 22. 修改配置前建议保留原始配置备份，方便回滚。
