@@ -1,6 +1,6 @@
 # CodeGraph 使用笔记
 
-更新时间：2026-05-24。
+更新时间：2026-06-06。
 
 本文以 `@optave/codegraph` 为准，记录 CodeGraph 的安装、建索引、gitignore、Codex MCP 接入和日常使用流程。本文只写落地流程，不要求 AI 自动安装，也不要求 AI 自动执行索引构建。
 
@@ -301,6 +301,25 @@ AI 主要通过 MCP 查询已有索引。
 ```
 
 CodeGraph 更适合有函数、类、模块调用关系的代码项目。纯文档仓库、配置仓库或很小的脚本仓库，即使已经 build，索引收益也可能有限。
+
+## 与 Understand Anything 搭配
+
+CodeGraph 和 Understand Anything 的分工不同：
+
+- Understand Anything 更适合先建立全局认知，例如项目知识图谱、业务域、模块边界和团队 onboarding。
+- CodeGraph 更适合做精确结构查询，例如符号定义、调用方、被调用方、影响面和 staged diff 结构审查。
+
+推荐顺序：
+
+```text
+先用 Understand Anything 理解全局结构和业务域
+-> 再用 CodeGraph 查询目标符号、调用链和影响面
+-> 最后结合少量源码、测试和日志定位根因或审查风险
+```
+
+不要只凭可视化图谱或依赖图直接修改代码。涉及真实改动时，仍要回到源码证据和项目验证命令。
+
+Understand Anything 在 Codex 侧通过 skills 机制接入，安装方式见 [Codex Skills 使用笔记](../codex-skills.md)；CodeGraph 则通过 MCP 提供精确代码结构查询。
 
 ## 常用命令
 

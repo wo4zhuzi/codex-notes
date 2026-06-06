@@ -12,6 +12,8 @@ Codex 相关使用笔记与配置模板。
 - Agent 上下文管理、上下文生命周期和 Harness Engineering 分工。
 - Agent 评估与验证、阶段性评估和交付评估。
 - Codex 与 Claude Code 的协作方式、规则文件融合和跨工具接续。
+- Codex plugin 的定位、安装方式，以及与 skill 的区别。
+- Codex Skills 的触发、安装与 Understand Anything 的 Codex 安装方式。
 - codex-plugin-cc 在 Claude Code 中调用 Codex 的插件化协作流程。
 - Codex Subagent 注册、调用和多 agent 审查流程。
 - Function Calling 原理和订单查询 demo。
@@ -33,6 +35,7 @@ Codex 相关使用笔记与配置模板。
 ├── context-management.md
 ├── agent-evaluation.md
 ├── codex-claude-collaboration.md
+├── codex-plugins.md
 ├── codex-plugin-cc.md
 ├── git-workflow.md
 ├── spec-workflow.md
@@ -81,6 +84,7 @@ Codex 相关使用笔记与配置模板。
 - [Agent 上下文管理](./context-management.md)
 - [Agent 评估与验证](./agent-evaluation.md)
 - [Codex 与 Claude Code 协作](./codex-claude-collaboration.md)
+- [Codex Plugins 使用笔记](./codex-plugins.md)
 - [codex-plugin-cc 在 Claude Code 中使用](./codex-plugin-cc.md)
 - [Git 融入 AI 工作流](./git-workflow.md)
 - [Spec 模式实践](./spec-workflow.md)
@@ -122,21 +126,22 @@ Codex 相关使用笔记与配置模板。
 3. 继续阅读 [Agent 上下文管理](./context-management.md)，理解上下文选择、压缩、恢复和沉淀方式。
 4. 阅读 [Agent 评估与验证](./agent-evaluation.md)，理解阶段性评估、交付评估和验收证据。
 5. 如果同一仓库同时使用 Codex 和 Claude Code，阅读 [Codex 与 Claude Code 协作](./codex-claude-collaboration.md)，统一规则文件和交接流程。
-6. 如果希望在 Claude Code 中调用 Codex 做审查或救援，阅读 [codex-plugin-cc 在 Claude Code 中使用](./codex-plugin-cc.md)。
-7. 新项目先参考 [AI 项目落地清单](./ai-project-checklist.md)，确认导航、验证、权限边界和变更记录。
-8. 需要复盘或规划完整项目实战时，阅读 [AI Agent 完整项目实战复盘](./ai-agent-project-practice.md)，理解 Spec、垂直切片、验收清单和 token 控制方式。
-9. 阅读 [Git 融入 AI 工作流](./git-workflow.md)，明确分支、worktree、commit 和 push 的授权边界。
-10. 新项目或高风险任务先参考 [Spec 模式实践](./spec-workflow.md)，确认边界、方案和进度。
-11. Spec 确认后，核心业务逻辑参考 [TDD 实践手册](./tdd-workflow.md)，先用测试锁定行为再实现。
-12. 再阅读 [Codex CLI 使用笔记](./codex-cli.md)，完成 Codex CLI 安装与登录。
-13. 继续阅读 [Codex Skills 使用笔记](./codex-skills.md)，了解 skills 的触发方式和排查流程。
-14. 如需使用多 agent 审查或专项取证，阅读 [Codex Subagent 使用笔记](./subagent.md)。
-15. 如需理解知识库问答和检索增强生成，阅读 [RAG 使用笔记](./rag.md)，并运行 `demos/rag-notes/`。
-16. 如需接入外部工具或文档服务，阅读 [Codex MCP 使用笔记](./mcp.md)。
-17. 如需让 AI 使用 CodeGraph 等外部工具，阅读 [外部工具使用笔记](./external-tools)。
-18. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
-19. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
-20. 修改配置前建议保留原始配置备份，方便回滚。
+6. 如果需要安装 Codex plugin 或理解 plugin 与 skill 的分工，阅读 [Codex Plugins 使用笔记](./codex-plugins.md)。
+7. 如果希望在 Claude Code 中调用 Codex 做审查或救援，阅读 [codex-plugin-cc 在 Claude Code 中使用](./codex-plugin-cc.md)。
+8. 新项目先参考 [AI 项目落地清单](./ai-project-checklist.md)，确认导航、验证、权限边界和变更记录。
+9. 需要复盘或规划完整项目实战时，阅读 [AI Agent 完整项目实战复盘](./ai-agent-project-practice.md)，理解 Spec、垂直切片、验收清单和 token 控制方式。
+10. 阅读 [Git 融入 AI 工作流](./git-workflow.md)，明确分支、worktree、commit 和 push 的授权边界。
+11. 新项目或高风险任务先参考 [Spec 模式实践](./spec-workflow.md)，确认边界、方案和进度。
+12. Spec 确认后，核心业务逻辑参考 [TDD 实践手册](./tdd-workflow.md)，先用测试锁定行为再实现。
+13. 再阅读 [Codex CLI 使用笔记](./codex-cli.md)，完成 Codex CLI 安装与登录。
+14. 继续阅读 [Codex Skills 使用笔记](./codex-skills.md)，了解 skills 的触发方式、安装方式、排查流程和 Understand Anything 的 Codex 接入方式。
+15. 如需使用多 agent 审查或专项取证，阅读 [Codex Subagent 使用笔记](./subagent.md)。
+16. 如需理解知识库问答和检索增强生成，阅读 [RAG 使用笔记](./rag.md)，并运行 `demos/rag-notes/`。
+17. 如需接入外部工具或文档服务，阅读 [Codex MCP 使用笔记](./mcp.md)。
+18. 如需让 AI 使用 CodeGraph 等外部工具，阅读 [外部工具使用笔记](./external-tools)。
+19. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
+20. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
+21. 修改配置前建议保留原始配置备份，方便回滚。
 
 执行会产生仓库改动的任务时，建议遵循 [Codex 核心指令](./codex-core-commands.md) 中的流程：先规划、再让 AI 检查计划、执行后在 `docs/changes/` 生成日期开头的变更文档，最后检查 diff 并审查风险。
 
