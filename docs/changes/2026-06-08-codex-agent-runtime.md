@@ -25,6 +25,7 @@
 
 - 新增 `codex-agent-runtime.md`：
   - 说明 Codex 不会默认读取完整仓库。
+  - 新增 `AGENTS.md` 未被有效加载或执行的漂移机制说明。
   - 区分自动加载、按需读取和工具探索。
   - 解释“扫描多”和“扫描少”的提示词写法。
   - 补充普通规划文档为什么有时会被发现。
@@ -35,6 +36,17 @@
   - 调整推荐阅读顺序。
 - 更新 `context-management.md` 和 `llm-agent-principles.md`：
   - 增加到新文章的交叉引用，明确文档边界。
+
+## 追加记录
+
+用户进一步要求记录一种漂移现象：不要命名为“没有生成 `docs/changes`”，而应归因为“没能有效加载 `AGENTS.md`”。本次追加将该问题扩展为“`AGENTS.md` 未被有效加载或执行”，因为实际原因可能是规则未进入有效上下文，也可能是规则进入上下文后没有被稳定执行。
+
+追加内容包括：
+
+- 区分规则未进入有效上下文和规则未被稳定执行两类情况。
+- 说明启动目录、`CODEX_HOME`、`AGENTS.override.md`、指令长度、权限/模式覆盖、长会话注意力漂移和状态误判等原因。
+- 增加结束前强制检查清单，强调用 `git status --short` 机械确认是否存在仓库改动。
+- 增加验证当前指令来源的命令示例。
 
 ## 验证结果
 
@@ -47,8 +59,9 @@ rg -n "TODO|FIXME|your-api-key|sk-" .
 
 结果：
 
-- `git status --short` 显示本次仅涉及 `README.md`、`context-management.md`、`llm-agent-principles.md`、新增 `codex-agent-runtime.md` 和本变更记录。
-- 敏感信息扫描仅命中文档中的检查命令示例、既有示例分支名 `project-task-branch` 和 `risk-reviewer` 名称，未发现真实 API Key、Token、私有代理地址或遗留调试标记。
+- 首次新增文章时，`git status --short` 显示仅涉及 `README.md`、`context-management.md`、`llm-agent-principles.md`、新增 `codex-agent-runtime.md` 和本变更记录。
+- 追加“`AGENTS.md` 未被有效加载或执行”章节后，`git status --short` 显示仅涉及 `codex-agent-runtime.md` 和本变更记录。
+- 敏感信息扫描仅命中文档中的检查命令示例、既有示例分支名 `project-task-branch`、`risk-reviewer` 名称，以及新增的 Codex 指令验证命令示例，未发现真实 API Key、Token、私有代理地址或遗留调试标记。
 
 ## 后续建议
 
