@@ -2,6 +2,8 @@
 
 本文记录 AI Agent 协作中的上下文管理方法。它不是替代 Harness Engineering，而是其中的基础模块：上下文管理决定 agent 看见什么，Harness Engineering 决定 agent 如何被约束、验证和恢复。
 
+如果需要理解 Codex 收到一句话后如何加载 `AGENTS.md`、选择文件、调用工具和恢复任务状态，见 [Codex Agent 运行机制](./codex-agent-runtime.md)。本文重点讨论人类应如何准备、收敛和沉淀上下文。
+
 ## 核心目标
 
 上下文管理的目标不是给 agent 塞入尽可能多的信息，而是让它在当前任务中看到足够、准确、可验证的信息。

@@ -1,6 +1,6 @@
 # LLM 与 Agent 原理地图
 
-本文记录理解 AI Agent 系统所需的原理层知识。它不替代 [AI 编程工作流](./ai-workflow.md)、[Agent 上下文管理](./context-management.md)、[Function Calling 使用笔记](./function-calling.md)、[RAG 使用笔记](./rag.md) 或 [Codex MCP 使用笔记](./mcp.md)，而是解释这些机制背后的共同基础。
+本文记录理解 AI Agent 系统所需的原理层知识。它不替代 [Codex Agent 运行机制](./codex-agent-runtime.md)、[AI 编程工作流](./ai-workflow.md)、[Agent 上下文管理](./context-management.md)、[Function Calling 使用笔记](./function-calling.md)、[RAG 使用笔记](./rag.md) 或 [Codex MCP 使用笔记](./mcp.md)，而是解释这些机制背后的共同基础。
 
 ## 结论
 
@@ -14,7 +14,7 @@ LLM 如何生成文本
 -> 为什么 Agent 会失败，以及如何验证
 ```
 
-理解这条链路后，再看 Codex、Function Calling、MCP、RAG 和 Agent Evaluation，会更容易判断它们分别解决什么问题。
+理解这条链路后，再看 [Codex Agent 运行机制](./codex-agent-runtime.md)、Function Calling、MCP、RAG 和 Agent Evaluation，会更容易判断它们分别解决什么问题。
 
 ## LLM 如何生成回答
 
