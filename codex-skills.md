@@ -116,6 +116,8 @@ skills-lock.json
 
 `planning-with-files` 适合需要把任务计划、过程笔记和执行状态落到文件中的长任务。它的价值不是替代 `/plan` 或 `docs/changes/`，而是让任务在中断、压缩上下文或跨天恢复时仍有清晰现场。
 
+关于当前任务目录、显式归档、任务状态和 `docs/changes/` 边界，见 [planning-with-files 任务生命周期工作流](./planning-with-files-workflow.md)。
+
 推荐在以下场景使用：
 
 - 多步骤文档或代码改动，需要持续跟踪执行状态。

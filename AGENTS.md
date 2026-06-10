@@ -28,11 +28,18 @@
 - 用户确认完整 Spec 前，不得开始实现；执行完成后仍必须生成 `docs/changes/YYYY-MM-DD-<topic>.md`。
 - 涉及核心业务规则、bugfix、重构、权限、安全、数据一致性时，优先使用 TDD；操作流程见 `tdd-workflow.md`。
 - 有测试框架时，应先写失败测试，再实现，再验证通过；没有测试框架时，必须记录等价的手动验证步骤。
-- 如使用 `planning-with-files` 或类似文件型计划流程，`task_plan.md` 记录执行前计划，`findings.md` 记录过程上下文，`progress.md` 仅记录当前任务执行状态；`progress.md` 不替代 `docs/changes/`。
+- 如使用 `planning-with-files` 或类似文件型计划流程，当前任务固定使用 `.planning/current/`；`.planning/current/task_plan.md` 记录执行前计划，`.planning/current/findings.md` 记录过程上下文，`.planning/current/progress.md` 仅记录当前任务执行状态；`progress.md` 不替代 `docs/changes/`。
 - 如果本次会话产生任何仓库文件改动，必须在结束前自动创建或更新 `docs/changes/YYYY-MM-DD-<topic>.md`。
 - 不需要等待用户额外要求“生成日期变更文档”，也不要只在最终回复中用文字描述替代文档。
 - 变更文档应记录任务背景、根因定位、执行计划、变更内容、验证结果和直接相关的后续建议。
 - `task_plan.md`、`findings.md`、`progress.md` 和变更文档均不得写入真实 API Key、个人账户 Token、私有代理地址或内部服务 URL。
+
+## Planning-with-files 任务生命周期
+
+- AI 默认只读取和维护 `.planning/current/`；`.planning/archive/` 仅作为历史审计材料，不参与当前任务上下文恢复。
+- 用户继续补充同一目标需求时，继续更新 `.planning/current/`，不得新建任务或归档。
+- AI 不得仅凭计划完成、测试通过、最终回复或任务看似结束，自动归档 `.planning/current/`。
+- 归档必须由用户显式触发；AI 收到归档指令后，必须先确认归档对象和归档路径，用户确认后才可执行归档。
 
 ## ReAct 执行约束
 
