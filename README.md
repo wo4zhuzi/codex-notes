@@ -22,7 +22,7 @@ Codex 相关使用笔记与配置模板。
 - Function Calling 原理和订单查询 demo。
 - RAG 原理和本地 Markdown 知识库问答 demo。
 - Codex MCP 使用、原理和服务端设计思路。
-- CodeGraph、Next AI Draw.io 等外部工具的安装、配置和 MCP 接入流程。
+- CodeGraph、n8n、Next AI Draw.io 等外部工具的安装、配置和 MCP 接入流程。
 - CC-Switch 安装与服务商切换说明。
 - 面向不同开发场景的 CC-Switch 配置模板。
 
@@ -62,6 +62,7 @@ Codex 相关使用笔记与配置模板。
 ├── external-tools/
 │   ├── README.md
 │   ├── codegraph.md
+│   ├── n8n-ai-refactor-workflow.md
 │   └── next-ai-draw-io.md
 ├── docs/
 │   └── changes/
@@ -109,6 +110,7 @@ Codex 相关使用笔记与配置模板。
 - [RAG 使用笔记](./rag.md)
 - [Codex MCP 使用笔记](./mcp.md)
 - [外部工具使用笔记](./external-tools)
+- [AI 重构项目中 n8n 可以做什么](./external-tools/n8n-ai-refactor-workflow.md)
 - [CC-Switch 使用笔记](./cc-swtich.md)
 - [CC-Switch 配置模板](./cc-switch-configs)
 - [会话变更记录](./docs/changes)
@@ -154,9 +156,10 @@ Codex 相关使用笔记与配置模板。
 19. 如需理解知识库问答和检索增强生成，阅读 [RAG 使用笔记](./rag.md)，并运行 `demos/rag-notes/`。
 20. 如需接入外部工具或文档服务，阅读 [Codex MCP 使用笔记](./mcp.md)。
 21. 如需让 AI 使用 CodeGraph、Next AI Draw.io 等外部工具，阅读 [外部工具使用笔记](./external-tools)。
-22. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
-23. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
-24. 修改配置前建议保留原始配置备份，方便回滚。
+22. 如需在 AI 重构项目中接入 n8n 编排 GitHub、CI、通知、审批和 MCP 工具网关，阅读 [AI 重构项目中 n8n 可以做什么](./external-tools/n8n-ai-refactor-workflow.md)。
+23. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
+24. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
+25. 修改配置前建议保留原始配置备份，方便回滚。
 
 执行会产生仓库改动的任务时，建议遵循 [Codex 核心指令](./codex-core-commands.md) 中的流程：先规划、再让 AI 检查计划、执行后在 `docs/changes/` 生成日期开头的变更文档，最后检查 diff 并审查风险。
 

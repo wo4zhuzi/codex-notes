@@ -15,6 +15,7 @@
 | 工具 | 文档 | 适用场景 |
 | --- | --- | --- |
 | CodeGraph | [codegraph.md](./codegraph.md) | 为代码库建立函数级依赖图，让 AI 查询符号、调用链、影响面和结构上下文。 |
+| n8n | [n8n-ai-refactor-workflow.md](./n8n-ai-refactor-workflow.md) | 在 AI 重构项目中编排 GitHub、CI、通知、人工审批和 MCP 工具网关。 |
 | Next AI Draw.io | [next-ai-draw-io.md](./next-ai-draw-io.md) | 通过 MCP 让 AI 生成、编辑和导出 draw.io 架构图、流程图和模块依赖图。 |
 
 ## 推荐文档结构
