@@ -259,6 +259,32 @@ python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-githu
 
 私有仓库需要本机已有 GitHub 凭据，或配置 `GITHUB_TOKEN` / `GH_TOKEN`。
 
+### `last30days` skill 安装示例
+
+`last30days` 是第三方近 30 天社区研究 skill，适合调研人物、公司、产品、AI 工具趋势、竞品对比和近期舆情。
+
+官方对 Codex、Cursor、Gemini CLI 等 Agent Skills hosts 的推荐安装方式是：
+
+```bash
+npx skills add mvanhorn/last30days-skill -g -a codex
+```
+
+如果沿用 Codex 内置 `skill-installer`，安装路径应指向仓库中的 skill 目录：
+
+```shell
+python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo mvanhorn/last30days-skill \
+  --path skills/last30days
+```
+
+验证：
+
+```shell
+test -f ~/.codex/skills/last30days/SKILL.md && echo "installed"
+```
+
+安装后重启 Codex。完整配置、API Key、输出目录、HTML brief 和最佳使用方式见 [last30days Skill 使用笔记](./last30days-skill.md)。
+
 ### 安装后验证
 
 1. 确认目录存在：

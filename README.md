@@ -17,6 +17,7 @@ Codex 相关使用笔记与配置模板。
 - Codex plugin 的定位、安装方式，以及与 skill 的区别。
 - Codex Skills 的触发、安装与 Understand Anything 的 Codex 安装方式。
 - 个人自建 Skills 的命名、模板库、组合型工作流和 `my-` 前缀规范。
+- last30days skill 的安装、配置和近 30 天社区研究工作流。
 - codex-plugin-cc 在 Claude Code 中调用 Codex 的插件化协作流程。
 - Codex Subagent 注册、调用和多 agent 审查流程。
 - Function Calling 原理和订单查询 demo。
@@ -49,6 +50,7 @@ Codex 相关使用笔记与配置模板。
 ├── codex-core-commands.md
 ├── codex-skills.md
 ├── personal-skills.md
+├── last30days-skill.md
 ├── my-skills/
 │   └── my-codebase-intel/
 ├── subagent.md
@@ -105,6 +107,7 @@ Codex 相关使用笔记与配置模板。
 - [Codex 核心指令](./codex-core-commands.md)
 - [Codex Skills 使用笔记](./codex-skills.md)
 - [个人自建 Skills](./personal-skills.md)
+- [last30days Skill 使用笔记](./last30days-skill.md)
 - [Codex Subagent 使用笔记](./subagent.md)
 - [Function Calling 使用笔记](./function-calling.md)
 - [RAG 使用笔记](./rag.md)
@@ -152,14 +155,15 @@ Codex 相关使用笔记与配置模板。
 15. 再阅读 [Codex CLI 使用笔记](./codex-cli.md)，完成 Codex CLI 安装与登录。
 16. 继续阅读 [Codex Skills 使用笔记](./codex-skills.md)，了解 skills 的触发方式、安装方式、排查流程和 Understand Anything 的 Codex 接入方式。
 17. 如果要把多个 skills、MCP 或外部工具固定成个人工作流，阅读 [个人自建 Skills](./personal-skills.md)。
-18. 如需使用多 agent 审查或专项取证，阅读 [Codex Subagent 使用笔记](./subagent.md)。
-19. 如需理解知识库问答和检索增强生成，阅读 [RAG 使用笔记](./rag.md)，并运行 `demos/rag-notes/`。
-20. 如需接入外部工具或文档服务，阅读 [Codex MCP 使用笔记](./mcp.md)。
-21. 如需让 AI 使用 CodeGraph、Next AI Draw.io 等外部工具，阅读 [外部工具使用笔记](./external-tools)。
-22. 如需在 AI 重构项目中接入 n8n 编排 GitHub、CI、通知、审批和 MCP 工具网关，阅读 [AI 重构项目中 n8n 可以做什么](./external-tools/n8n-ai-refactor-workflow.md)。
-23. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
-24. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
-25. 修改配置前建议保留原始配置备份，方便回滚。
+18. 如需用 AI agent 汇总近 30 天社区讨论、竞品信号、人物动态或产品反馈，阅读 [last30days Skill 使用笔记](./last30days-skill.md)。
+19. 如需使用多 agent 审查或专项取证，阅读 [Codex Subagent 使用笔记](./subagent.md)。
+20. 如需理解知识库问答和检索增强生成，阅读 [RAG 使用笔记](./rag.md)，并运行 `demos/rag-notes/`。
+21. 如需接入外部工具或文档服务，阅读 [Codex MCP 使用笔记](./mcp.md)。
+22. 如需让 AI 使用 CodeGraph、Next AI Draw.io 等外部工具，阅读 [外部工具使用笔记](./external-tools)。
+23. 如需在 AI 重构项目中接入 n8n 编排 GitHub、CI、通知、审批和 MCP 工具网关，阅读 [AI 重构项目中 n8n 可以做什么](./external-tools/n8n-ai-refactor-workflow.md)。
+24. 阅读 [CC-Switch 使用笔记](./cc-swtich.md)，安装 CC-Switch 并了解配置切换方式。
+25. 根据实际任务选择 `cc-switch-configs/` 中的配置模板。
+26. 修改配置前建议保留原始配置备份，方便回滚。
 
 执行会产生仓库改动的任务时，建议遵循 [Codex 核心指令](./codex-core-commands.md) 中的流程：先规划、再让 AI 检查计划、执行后在 `docs/changes/` 生成日期开头的变更文档，最后检查 diff 并审查风险。
 
