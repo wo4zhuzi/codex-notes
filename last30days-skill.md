@@ -4,6 +4,8 @@
 
 `last30days` 是一个近 30 天研究型 Codex / Claude / Agent Skills skill，用于围绕人物、公司、产品、技术、舆情或竞品，从 Reddit、X、YouTube、TikTok、Hacker News、Polymarket、GitHub 和 Web 等来源汇总近期讨论，并按社区参与度和事实信号生成简报。
 
+它和 `brainstorming`、`writing-plans`、`systematic-debugging` 这类工程化 skills 的属性不同。工程化 skills 主要服务项目执行、代码质量和交付闭环；`last30days` 更像外部信息入口和研究引擎，服务最新信息获取、趋势追踪、社区反馈分析和个人知识库上游输入。
+
 Codex 中推荐使用官方 Agent Skills CLI 安装：
 
 ```bash
@@ -26,7 +28,28 @@ npx skills add mvanhorn/last30days-skill -g -a codex
 
 普通 Web 搜索更偏向网页索引和编辑内容，容易遗漏社区讨论、短视频评论、预测市场、GitHub 近期活动和社媒高参与内容。`last30days` 的价值在于把这些分散来源统一交给 agent 检索、评分和综合，适合回答“最近大家真实在讨论什么”。
 
+因此它适合单独拆分成主题文档：它不是“帮我把当前工程任务做完”的助手，而是“帮我持续打开外部信息渠道”的工具。后续如果结合自动化工作流，可以把一次性搜索升级成持续信息雷达，再沉淀到 Obsidian、Notion、RAG 知识库或团队协作系统中。
+
 该 skill 的运行时规范以仓库内 `skills/last30days/SKILL.md` 为准。README 说明当前主流程，但当 README、配置文档和 `SKILL.md` 出现差异时，优先以 `SKILL.md` 为准。
+
+## 和其他 Skills 的分工
+
+| 类型 | 代表工具 | 核心职责 |
+| --- | --- | --- |
+| 工程化 skills | `brainstorming`、`writing-plans`、`systematic-debugging`、`verification-before-completion` | 服务需求澄清、计划拆解、bug 根因定位、验证和交付闭环。 |
+| 代码库理解 skills | `my-codebase-intel`、Understand Anything、CodeGraph 相关流程 | 服务已有代码库理解、调用链分析、影响面评估和改动审查。 |
+| 信息渠道 skill | `last30days` | 服务外部信息发现、趋势追踪、社区反馈、竞品情报和人物动态。 |
+| 知识库与自动化 | RAG、Obsidian、Notion、n8n、Slack / 飞书推送 | 服务信息归档、周期性摘要、团队分发和后续检索增强。 |
+
+推荐把 `last30days` 放在信息输入层，而不是工程执行层：
+
+```text
+外部社区 / 平台 / 市场信号
+-> last30days 调研和保存 raw 结果
+-> 摘要、分类、去重和标签化
+-> Obsidian / Notion / RAG 知识库
+-> Codex / Claude 后续分析和工程决策上下文
+```
 
 ## 安装方式
 
@@ -193,6 +216,32 @@ export LAST30DAYS_MEMORY_DIR="$HOME/Documents/Last30Days"
 | 社区需求调研 | `/last30days what users want in React` |
 | prompt 技法调研 | `/last30days Nano Banana Pro prompting` |
 | 近期舆情和新闻 | `/last30days Universal Epic Universe` |
+
+### 知识库与自动化工作流
+
+如果只是手动运行一次，`last30days` 是研究工具；如果结合自动化工作流，它可以变成个人信息渠道的上游采集层。
+
+推荐链路：
+
+```text
+定期主题监控
+-> last30days 拉取近 30 天社区和市场信号
+-> 保存 raw Markdown 或 SQLite
+-> 自动摘要成日报 / 周报
+-> 推送到 Obsidian / Notion / Slack / 飞书
+-> 进入 RAG 知识库
+-> 作为后续 Agent 分析上下文
+```
+
+适合持续跟踪的主题：
+
+- AI 编程工具和模型生态，例如 Codex、Claude Code、Cursor、OpenClaw。
+- 行业趋势和竞品动态，例如某个 SaaS 赛道、开源项目或客户行业。
+- 关键人物和团队动态，例如创始人、投资人、开源维护者。
+- 用户真实反馈，例如某类工具的抱怨、付费意愿、迁移原因和使用场景。
+- prompt 技法和工作流实践，例如图像生成、代码 agent、自动化编排。
+
+这类工作流的关键不是“多查几个网页”，而是稳定地把外部信号转成可复用知识资产。
 
 ### 推荐工作流
 

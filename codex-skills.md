@@ -263,6 +263,8 @@ python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-githu
 
 `last30days` 是第三方近 30 天社区研究 skill，适合调研人物、公司、产品、AI 工具趋势、竞品对比和近期舆情。
 
+它和工程化 skills 的属性不同：`brainstorming`、`writing-plans`、`systematic-debugging` 主要服务项目执行和交付闭环；`last30days` 更偏外部信息渠道、趋势研究和个人知识库上游输入，因此单独拆成主题文档记录。
+
 官方对 Codex、Cursor、Gemini CLI 等 Agent Skills hosts 的推荐安装方式是：
 
 ```bash

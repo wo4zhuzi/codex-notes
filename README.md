@@ -17,7 +17,7 @@ Codex 相关使用笔记与配置模板。
 - Codex plugin 的定位、安装方式，以及与 skill 的区别。
 - Codex Skills 的触发、安装与 Understand Anything 的 Codex 安装方式。
 - 个人自建 Skills 的命名、模板库、组合型工作流和 `my-` 前缀规范。
-- last30days skill 的安装、配置和近 30 天社区研究工作流。
+- last30days skill 的安装、配置、外部信息渠道、趋势研究和知识库上游工作流。
 - codex-plugin-cc 在 Claude Code 中调用 Codex 的插件化协作流程。
 - Codex Subagent 注册、调用和多 agent 审查流程。
 - Function Calling 原理和订单查询 demo。
@@ -155,7 +155,7 @@ Codex 相关使用笔记与配置模板。
 15. 再阅读 [Codex CLI 使用笔记](./codex-cli.md)，完成 Codex CLI 安装与登录。
 16. 继续阅读 [Codex Skills 使用笔记](./codex-skills.md)，了解 skills 的触发方式、安装方式、排查流程和 Understand Anything 的 Codex 接入方式。
 17. 如果要把多个 skills、MCP 或外部工具固定成个人工作流，阅读 [个人自建 Skills](./personal-skills.md)。
-18. 如需用 AI agent 汇总近 30 天社区讨论、竞品信号、人物动态或产品反馈，阅读 [last30days Skill 使用笔记](./last30days-skill.md)。
+18. 如需用 AI agent 汇总近 30 天社区讨论、竞品信号、人物动态或产品反馈，并沉淀到个人知识库或自动化信息流，阅读 [last30days Skill 使用笔记](./last30days-skill.md)。
 19. 如需使用多 agent 审查或专项取证，阅读 [Codex Subagent 使用笔记](./subagent.md)。
 20. 如需理解知识库问答和检索增强生成，阅读 [RAG 使用笔记](./rag.md)，并运行 `demos/rag-notes/`。
 21. 如需接入外部工具或文档服务，阅读 [Codex MCP 使用笔记](./mcp.md)。
