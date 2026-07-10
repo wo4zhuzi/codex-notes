@@ -2,6 +2,9 @@ docs/*
 !docs/changes/
 !docs/changes/**
 
+!docs/specs/
+!docs/specs/**
+
 !docs/agent-evaluation-references/
 !docs/agent-evaluation-references/**
 

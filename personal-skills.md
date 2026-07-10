@@ -9,6 +9,7 @@
 ```text
 my-codebase-intel
 my-debug-flow
+my-go-change-review
 my-review-gate
 my-doc-change-log
 ```
@@ -51,6 +52,7 @@ my-<workflow-name>
 | --- | --- |
 | `my-codebase-intel` | 组合 Understand Anything、CodeGraph、源码验证和 diff review。 |
 | `my-debug-flow` | 组合 systematic-debugging、日志检查、测试复现和修复验证。 |
+| `my-go-change-review` | 对比两个 Git ref，深度审查 Go 逻辑、事务和数据库锁风险。 |
 | `my-review-gate` | 组合 diff impact、代码审查、测试缺口和交付风险检查。 |
 | `my-doc-change-log` | 组合文档修改、链接检查、敏感信息扫描和 `docs/changes/` 记录。 |
 
@@ -60,10 +62,17 @@ my-<workflow-name>
 
 ```text
 my-skills/
-└── my-codebase-intel/
+├── install-skill.sh
+├── my-codebase-intel/
+│   ├── SKILL.md
+│   └── agents/
+│       └── openai.yaml
+└── my-go-change-review/
     ├── SKILL.md
-    └── agents/
-        └── openai.yaml
+    ├── agents/
+    ├── references/
+    ├── scripts/
+    └── tests/
 ```
 
 `my-skills/` 只用于保存模板和沉淀个人工作流，不是 Codex 自动发现目录。
@@ -199,9 +208,68 @@ Understand Anything 建立全局认知
 使用 my-codebase-intel 审查当前改动
 ```
 
+## 示例：`my-go-change-review`
+
+模板位置：
+
+```text
+my-skills/my-go-change-review/SKILL.md
+my-skills/my-go-change-review/agents/openai.yaml
+```
+
+`my-go-change-review` 接受原始 ref、开发 ref 和可选改动目标，以 merge-base 固定本次开发分支的真实改动。它从 diff 定向追踪新旧实现、直接调用方、相关测试和历史提交，优先判断逻辑是否自洽，以及事务边界、`tx` 逃逸、锁范围、锁顺序、隔离级别和幂等性是否合理。
+
+该 Skill 默认只读，不修改业务代码。完成 findings、逻辑自洽结论、事务锁专项结论和验证说明后，才询问用户是否生成审查报告。
+
+触发示例：
+
+```text
+使用 my-go-change-review 审查 main 和 feature/order-tx，本次目标是调整订单扣减事务。
+```
+
+## 安装与换机恢复
+
+仓库中的 `my-skills/` 是个人 Skill 模板的唯一维护源。推荐使用通用安装器复制到用户级 Codex Skills 目录：
+
+```bash
+bash my-skills/install-skill.sh my-go-change-review
+```
+
+默认目标路径：
+
+```text
+${CODEX_HOME:-$HOME/.codex}/skills/my-go-change-review
+```
+
+目标已存在时，安装器默认停止，避免覆盖本机修改。确认使用仓库版本替换时执行：
+
+```bash
+bash my-skills/install-skill.sh my-go-change-review --replace
+```
+
+`--replace` 会先把旧版本备份到：
+
+```text
+${CODEX_HOME:-$HOME/.codex}/skills/.backups/
+```
+
+换电脑后的恢复流程：
+
+1. 安装 Git 和 Codex。
+2. clone 本仓库并进入仓库根目录。
+3. 运行上述安装命令。
+4. 检查 `SKILL.md` 是否存在。
+5. 重启 Codex，让新 Skill 被运行时发现。
+
+验证命令：
+
+```bash
+test -f "${CODEX_HOME:-$HOME/.codex}/skills/my-go-change-review/SKILL.md"
+```
+
 ## 创建流程
 
-创建全新个人 skill 时优先使用 `skill-creator`。如果是从本仓库模板启用 `my-codebase-intel`，可以复制模板目录：
+创建全新个人 skill 时优先使用 `skill-creator`。启用仓库已有模板时优先使用 `my-skills/install-skill.sh`；如果需要手动启用 `my-codebase-intel`，也可以复制模板目录：
 
 ```bash
 cp -R my-skills/my-codebase-intel ~/.codex/skills/my-codebase-intel

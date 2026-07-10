@@ -86,7 +86,7 @@ skills-lock.json
 
 完整命名、目录、元数据和组合型工作流模板见 [个人自建 Skills](./personal-skills.md)。
 
-本仓库的个人 skill 模板集中放在 `my-skills/`，例如 `my-skills/my-codebase-intel/SKILL.md`。该目录是模板库，不是 Codex 自动发现目录；真实启用时仍需复制或链接到 `~/.codex/skills/{skill-name}/` 或 `.agents/skills/{skill-name}/`。
+本仓库的个人 skill 模板集中放在 `my-skills/`，当前包括 `my-skills/my-codebase-intel/SKILL.md` 和 `my-skills/my-go-change-review/SKILL.md`。该目录是模板库，不是 Codex 自动发现目录；用户级启用可运行 `bash my-skills/install-skill.sh <skill-name>`，也可手动复制或链接到 `~/.codex/skills/{skill-name}/`。项目级启用仍放在 `.agents/skills/{skill-name}/`。
 
 `skills-lock.json` 是项目级 skills 的锁文件或清单，作用类似依赖锁文件：
 

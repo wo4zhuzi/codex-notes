@@ -52,7 +52,9 @@ Codex 相关使用笔记与配置模板。
 ├── personal-skills.md
 ├── last30days-skill.md
 ├── my-skills/
-│   └── my-codebase-intel/
+│   ├── install-skill.sh
+│   ├── my-codebase-intel/
+│   └── my-go-change-review/
 ├── subagent.md
 ├── function-calling.md
 ├── rag.md
@@ -107,6 +109,7 @@ Codex 相关使用笔记与配置模板。
 - [Codex 核心指令](./codex-core-commands.md)
 - [Codex Skills 使用笔记](./codex-skills.md)
 - [个人自建 Skills](./personal-skills.md)
+- [Go 双分支深度审查 Skill](./my-skills/my-go-change-review/SKILL.md)
 - [last30days Skill 使用笔记](./last30days-skill.md)
 - [Codex Subagent 使用笔记](./subagent.md)
 - [Function Calling 使用笔记](./function-calling.md)
