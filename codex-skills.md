@@ -10,12 +10,10 @@
 
 | Skill | 来源 | 适用场景 | 典型触发方式 |
 | --- | --- | --- | --- |
-| `brainstorming` | `obra/superpowers` | 需求澄清、方案发散、设计评审 | 创建功能、修改行为、需要技术取舍 |
 | `planning-with-files` | `OthmanAdi/planning-with-files` | 文件型任务计划、过程笔记和进度跟踪 | 长任务规划、跨上下文恢复、生成 `task_plan.md` |
-| `writing-plans` | `obra/superpowers` | 将已确认需求拆成可执行计划 | 根据方案生成实现计划、多步骤任务规划 |
-| `systematic-debugging` | `obra/superpowers` | bug、测试失败、构建失败、异常行为排查 | 帮我排查问题、测试失败了、定位根因 |
 | `react-execution` | 自定义推荐 | 执行阶段小步反馈循环 | 执行计划、接口兼容、供应商兼容、未知代码库改动 |
-| `verification-before-completion` | `obra/superpowers` | 完成前强制验证，避免未验证就声称完成 | 准备说完成、修好了、测试通过前 |
+
+截至 2026-07-14，本机已卸载单独安装的 `brainstorming`、`writing-plans`、`systematic-debugging` 和 `verification-before-completion`，当前不使用 Superpowers Skill 或完整插件。
 
 当前会话识别到的系统内置 skills：
 
@@ -348,9 +346,9 @@ test -f ~/.codex/skills/brainstorming/SKILL.md && echo "installed"
 
 安装完成后重启 Codex，新的 `brainstorming` skill 才会被会话识别。
 
-### 程序员推荐安装组合
+### Superpowers 历史安装组合与卸载原因
 
-推荐先单独安装以下 Superpowers skills，而不是一开始安装完整 Superpowers 插件：
+本机曾单独安装以下 Superpowers Skills：
 
 ```text
 brainstorming
@@ -359,11 +357,17 @@ systematic-debugging
 verification-before-completion
 ```
 
-取舍依据：
+这套组合曾用于覆盖需求澄清、计划拆解、根因排查和完成前验证。升级模型并强化仓库级工作流后，本机不再默认安装，原因如下：
 
-- 覆盖日常开发最常见闭环：需求澄清、计划拆解、根因排查、完成前验证。
-- 不强制引入完整 Superpowers 的重流程，例如 worktree、强制 TDD、subagent 驱动开发和分支收尾。
-- 与本仓库核心工作流兼容：先计划、定位根因、执行后验证和记录上下文。
+- 冲突不在 Skill 文件格式，而在工作流控制权。旧 Skill 把方案数量、确认次数、设计文档、TDD、commit 和子 agent 调度写成无条件硬门槛；本仓库已通过 `AGENTS.md`、Plan / Spec、ReAct 和验证规则管理相同环节。
+- `brainstorming` 会对简单改动也强制多轮澄清、多个方案、设计文档、提交和再次确认，容易与仓库 Plan / Spec 重复。
+- `writing-plans` 要求频繁 commit，并依赖 `subagent-driven-development` 或 `executing-plans`；这与仓库“未经用户确认不得 commit”的权限规则冲突，相关依赖也不一定已安装。
+- 更强模型能够结合任务风险、仓库规则和工具反馈动态选择流程粒度。继续叠加无条件流程，会压缩模型的判断空间，表现为重复规划、重复确认、调用不存在的 Skill 或为低风险任务生成过量文档。
+- 根因优先、最小修改和完成前验证仍然有效，但这些原则已经写入仓库级规则，不需要再由 Superpowers 重复注入。
+
+以上是根据本机安装的 Skill 内容与仓库规则得出的工程结论，不是 OpenAI 关于 GPT-5.6 与 Superpowers 兼容性的官方声明。
+
+如后续需要恢复，可重新执行安装命令：
 
 安装命令：
 
@@ -376,22 +380,17 @@ python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-githu
   --path skills/verification-before-completion
 ```
 
-如已安装其中某个 skill，安装脚本可能提示目标目录已存在；这种情况可只安装缺失项。
+重新安装前应先检查上游 Skill 当前规则，确认其提交、TDD、文档和子 agent 约束与目标仓库一致。
 
-验证：
+卸载后的检查命令：
 
 ```shell
-find ~/.codex/skills -maxdepth 2 -name SKILL.md
+for skill in brainstorming writing-plans systematic-debugging verification-before-completion; do
+  test ! -e "$HOME/.codex/skills/$skill" || echo "still installed: $skill"
+done
 ```
 
-当前已安装：
-
-```text
-~/.codex/skills/brainstorming/SKILL.md
-~/.codex/skills/writing-plans/SKILL.md
-~/.codex/skills/systematic-debugging/SKILL.md
-~/.codex/skills/verification-before-completion/SKILL.md
-```
+命令无输出表示四个 Skill 均已卸载。重新安装或卸载后应重启 Codex 或开启新会话，使 Skill 列表刷新。
 
 ### 分场景推荐
 
@@ -399,19 +398,19 @@ find ~/.codex/skills -maxdepth 2 -name SKILL.md
 
 | 场景 | 推荐 skill | 用法 |
 | --- | --- | --- |
-| 需求澄清、方案发散、技术取舍 | `brainstorming` | 先确认目标、边界和取舍，再进入计划或实现。 |
+| 需求澄清、方案发散、技术取舍 | Plan / Spec | 按 `AGENTS.md` 的风险分级决定是否需要用户确认。 |
 | 长任务计划、跨上下文恢复 | `planning-with-files` | 生成 `task_plan.md`、`findings.md` 和 `progress.md`。 |
-| 已确认需求拆成执行计划 | `writing-plans` | 将方案拆成可执行步骤和验证命令。 |
-| bug、异常、测试失败、构建失败 | `systematic-debugging` | 先定位根因，再提出修复和验证路径。 |
+| 已确认需求拆成执行计划 | Plan / Spec | 记录根因、修改步骤、验证方式和风险边界。 |
+| bug、异常、测试失败、构建失败 | ReAct | 先收集证据和定位根因，再小步修复并验证。 |
 | 执行计划、接口兼容、供应商兼容、未知代码库改动 | `react-execution` | 按 `Goal -> Observe -> Decide -> Act -> Verify -> Adjust -> Final` 小步推进。 |
-| 准备声称完成、修好或测试通过前 | `verification-before-completion` | 先运行最新验证命令，再汇报结论。 |
+| 准备声称完成、修好或测试通过前 | 仓库验证规则 | 先运行最新验证命令，再汇报结论。 |
 
-`react-execution` 适合作为执行阶段 skill，而不是替代 `brainstorming`、`writing-plans` 或 `systematic-debugging`。推荐组合：
+当前推荐组合：
 
 ```text
-复杂新功能：brainstorming -> writing-plans/planning-with-files -> react-execution -> verification-before-completion
-Bug / 兼容问题：systematic-debugging -> react-execution -> verification-before-completion
-普通计划执行：writing-plans -> react-execution -> verification-before-completion
+复杂新功能：Spec -> planning-with-files -> ReAct -> 仓库验证
+Bug / 兼容问题：根因定位 -> ReAct -> 仓库验证
+普通计划执行：Plan -> ReAct -> 仓库验证
 ```
 
 ### `agent-evaluation` 多场景 skill 设计
@@ -540,7 +539,7 @@ Plugins -> Coding -> Superpowers -> +
 
 - 完整 Superpowers 插件流程更重，会更积极地触发规划、TDD、review、worktree 和分支收尾等规范。
 - 如果安装完整 Superpowers 插件，建议删除或停用单独安装的同名 skills，避免 `brainstorming` 等同名 skill 出现重复来源导致触发行为不稳定。
-- 如果只需要轻量工程闭环，优先保留单独安装的四个 skills。
+- 本机当前不安装完整插件或四个独立 Skills；只有在目标仓库缺少等价工作流、且接受其强制流程时再按需安装。
 
 ### 特殊安装：Understand Anything
 
