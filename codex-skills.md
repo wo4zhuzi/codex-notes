@@ -12,6 +12,7 @@
 | --- | --- | --- | --- |
 | `planning-with-files` | `OthmanAdi/planning-with-files` | 文件型任务计划、过程笔记和进度跟踪 | 长任务规划、跨上下文恢复、生成 `task_plan.md` |
 | `react-execution` | 自定义推荐 | 执行阶段小步反馈循环 | 执行计划、接口兼容、供应商兼容、未知代码库改动 |
+| `learn-framework` | 个人自建 | 系统学习框架、SDK、依赖库或代码库 | 确认主流设计、建立运行链路、制定并执行 L0-L4 学习协议 |
 
 截至 2026-07-14，本机已卸载单独安装的 `brainstorming`、`writing-plans`、`systematic-debugging` 和 `verification-before-completion`，当前不使用 Superpowers Skill 或完整插件。
 
@@ -84,7 +85,7 @@ skills-lock.json
 
 完整命名、目录、元数据和组合型工作流模板见 [个人自建 Skills](./personal-skills.md)。
 
-本仓库的个人 skill 模板集中放在 `my-skills/`，当前包括 `my-skills/my-codebase-intel/SKILL.md` 和 `my-skills/my-go-change-review/SKILL.md`。该目录是模板库，不是 Codex 自动发现目录；用户级启用可运行 `bash my-skills/install-skill.sh <skill-name>`，也可手动复制或链接到 `~/.codex/skills/{skill-name}/`。项目级启用仍放在 `.agents/skills/{skill-name}/`。
+本仓库的个人 skill 模板集中放在 `my-skills/`，当前包括 `my-skills/learn-framework/SKILL.md`、`my-skills/my-codebase-intel/SKILL.md` 和 `my-skills/my-go-change-review/SKILL.md`。该目录是模板库，不是 Codex 自动发现目录；用户级启用可运行 `bash my-skills/install-skill.sh <skill-name>`，也可手动复制或链接到 `~/.codex/skills/{skill-name}/`。项目级启用仍放在 `.agents/skills/{skill-name}/`。
 
 `skills-lock.json` 是项目级 skills 的锁文件或清单，作用类似依赖锁文件：
 
@@ -109,6 +110,90 @@ skills-lock.json
 ```
 
 ## 使用方式
+
+### `learn-framework` 使用规范
+
+`learn-framework` 用于系统学习新框架、SDK、依赖库或代码库。它先确认版本、官方定位和主流设计，再通过官方示例、最小完整纵向项目、故障注入、运行链路、源码追踪和迁移测试形成可验证理解。默认目标为 L2“运行与诊断”，不把完成学习协议等同于系统已经生产就绪。
+
+仓库模板位置：
+
+```text
+my-skills/learn-framework/
+├── SKILL.md
+├── agents/openai.yaml
+└── references/
+    ├── workflow.md
+    └── protocol-template.md
+```
+
+首次换机或本机尚未安装时执行：
+
+```bash
+bash my-skills/install-skill.sh learn-framework
+```
+
+安装完成后重启 Codex，使新 Skill 被运行时发现。
+
+学习远程仓库时显式调用：
+
+```text
+$learn-framework 学习 https://github.com/cloudwego/eino，目标 L2
+```
+
+如果当前业务项目已经依赖某个 Go Module，优先让 Skill 从 `go.mod`、`go.work`、`go.sum` 和本地模块缓存解析项目实际使用的版本：
+
+```text
+$learn-framework 学习当前项目依赖的 github.com/cloudwego/eino
+```
+
+也可以学习本地源码或当前仓库：
+
+```text
+$learn-framework 学习本地目录 ../eino，执行到 L1
+$learn-framework 学习当前仓库
+```
+
+首次调用默认执行 `protocol` 模式，只建立学习协议和证据基线：
+
+1. 区分学习工作区与框架源码，远程源码默认不复制进业务仓库。
+2. 确定精确版本或 commit、官方定位、框架类别和主流设计。
+3. 在 `docs/learning/<framework>/` 下生成有证据的学习协议、证据表和架构图。
+4. 展示版本、主路径、证据、争议和纵向项目候选，停在“决策门 1”等待确认。
+5. 用户确认前不生成业务代码，也不提前声称已经达到目标等级。
+
+首次生成的核心产物：
+
+```text
+docs/learning/<framework>/
+├── learning-protocol.md
+├── evidence.md
+└── architecture.md
+```
+
+`runtime-path.md`、`failure-matrix.md` 和 `source-map.md` 在进入对应阶段后按需创建，不预先生成空文档。
+
+确认“决策门 1”后继续执行：
+
+```text
+$learn-framework 继续，模式 execute
+```
+
+Skill 会读取现有 `learning-protocol.md` 恢复状态，每次只推进用户已授权的下一阶段：
+
+1. 运行版本匹配的官方完整示例。
+2. 设计最小完整纵向项目，并在“决策门 2”确认范围。
+3. 实现正常路径，验证超时、业务错误和依赖不可用。
+4. 沿一次真实运行链路追踪入口、扩展点、生命周期和错误传播。
+5. 执行一次只改变一个变量的迁移测试。
+6. 在“决策门 3”根据实际命令、测试、日志和源码证据验收目标等级。
+
+继续上一次学习也可以使用：
+
+```text
+$learn-framework 继续上次的框架学习
+```
+
+版本、主路径或目标等级发生变化时，应先让 Skill 分析对现有协议的影响，不要把旧版本结论静默复用到新版本。L2 只代表能够运行主路径并诊断常见跨组件故障；安全、容量、部署、回滚、数据一致性和灾备仍需单独进行生产就绪评估。
 
 ### `planning-with-files` 使用规范
 

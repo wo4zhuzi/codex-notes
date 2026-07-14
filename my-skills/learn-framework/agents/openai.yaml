@@ -1,0 +1,4 @@
+interface:
+  display_name: "框架快速学习"
+  short_description: "基于主流设计、源码证据与运行验证生成当前项目专属框架学习协议"
+  default_prompt: "使用 $learn-framework 分析指定框架或当前项目，并生成分阶段、可验证的学习协议。"
